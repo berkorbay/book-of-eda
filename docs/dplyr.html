@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.0.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Berk Orbay">
+<meta name="dcterms.date" content="2020-06-01">
+
+<title>Book of Exploratory Data Analysis - 2&nbsp; dplyr</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./summary.html" rel="next">
+<link href="./intro.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">dplyr</span></h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Book of Exploratory Data Analysis</a> 
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">Welcome</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dplyr.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">dplyr</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./summary.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Summary</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">References</a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#introduction-to-dplyr-1.0.0" id="toc-introduction-to-dplyr-1.0.0" class="nav-link active" data-scroll-target="#introduction-to-dplyr-1.0.0"> <span class="header-section-number">2.1</span> Introduction to dplyr 1.0.0+</a>
+  <ul class="collapse">
+  <li><a href="#preparations" id="toc-preparations" class="nav-link" data-scroll-target="#preparations"> <span class="header-section-number">2.1.1</span> Preparations</a></li>
+  </ul></li>
+  <li><a href="#fundamentals" id="toc-fundamentals" class="nav-link" data-scroll-target="#fundamentals"> <span class="header-section-number">2.2</span> Fundamentals</a>
+  <ul class="collapse">
+  <li><a href="#selectrename" id="toc-selectrename" class="nav-link" data-scroll-target="#selectrename"> <span class="header-section-number">2.2.1</span> <code>select</code>/<code>rename</code></a></li>
+  <li><a href="#filterdistinct" id="toc-filterdistinct" class="nav-link" data-scroll-target="#filterdistinct"> <span class="header-section-number">2.2.2</span> <code>filter/distinct</code></a></li>
+  <li><a href="#arrange" id="toc-arrange" class="nav-link" data-scroll-target="#arrange"> <span class="header-section-number">2.2.3</span> <code>arrange</code></a></li>
+  <li><a href="#mutatetransmute" id="toc-mutatetransmute" class="nav-link" data-scroll-target="#mutatetransmute"> <span class="header-section-number">2.2.4</span> <code>mutate</code>/<code>transmute</code></a></li>
+  <li><a href="#group_bysummarise" id="toc-group_bysummarise" class="nav-link" data-scroll-target="#group_bysummarise"> <span class="header-section-number">2.2.5</span> <code>group_by</code>/<code>summarise</code></a></li>
+  </ul></li>
+  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"> <span class="header-section-number">2.3</span> Exercises</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion"> <span class="header-section-number">2.4</span> Conclusion</a></li>
+  <li><a href="#appendix" id="toc-appendix" class="nav-link" data-scroll-target="#appendix"> <span class="header-section-number">2.5</span> Appendix</a>
+  <ul class="collapse">
+  <li><a href="#mini-lubridate-tutorial" id="toc-mini-lubridate-tutorial" class="nav-link" data-scroll-target="#mini-lubridate-tutorial"> <span class="header-section-number">2.5.1</span> Mini lubridate tutorial</a></li>
+  </ul></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"> <span class="header-section-number">2.6</span> References</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">dplyr</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Berk Orbay </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">June 1, 2020</p>
+    </div>
+  </div>
+    
+  </div>
+  
+
+</header>
+
+<section id="introduction-to-dplyr-1.0.0" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="introduction-to-dplyr-1.0.0"><span class="header-section-number">2.1</span> Introduction to dplyr 1.0.0+</h2>
+<p>Main purpose of this document is to introduce a major data manipulation package, <code>dplyr</code>, with a contemporary subject. There are seven fundamental <code>dplyr</code> functions: <code>select</code>/<code>rename</code>, <code>filter</code>, <code>distinct</code>, <code>arrange</code>, <code>mutate</code>/<code>transmute</code>, <code>group_by</code> and <code>summarise</code> with a number of assisting functions used either in these functions or separately. In this document, we will cover every one of them and there will be supplementary functions to carry out data operations. Also, pipe operator (<code>%&gt;%</code>) will be briefly introduced. This document is updated for <code>dplyr 1.0.0</code> and <code>R 4.0+</code> to show you new stuff as well. We will also use <code>lubridate</code> package for date time operations but we will not cover it except for quick explanations (check appendix at the end of this document for a mini tutorial). You can use advanced features in the “Advance Usage” subsections.</p>
+<section id="preparations" class="level3" data-number="2.1.1">
+<h3 data-number="2.1.1" class="anchored" data-anchor-id="preparations"><span class="header-section-number">2.1.1</span> Preparations</h3>
+<p>There are two prerequisites to start: Install <code>tidyverse</code> package and putting the relevant data set into the working directory (write <code>getwd()</code> in the console to locate your working directory). In this document, topic of the data set is the hourly licensed and unlicensed renewable energy production data between January 1, 2018 and May 31, 2020.</p>
+<p>To install the package run <code>install.packages("tidyverse")</code> in the console and select a mirror (first one is quite ok). Once you install the library you can always call it with <code>library(tidyverse)</code> command (<strong>no need to reinstall</strong>). You can download the data set from its <strong><a href="https://github.com/berkorbay/datasets/raw/master/renewables_production/rp_201801_202005_df.rds">GitHub Repository</a></strong>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse) <span class="co">#tidyverse is a package group which includes dplyr as well</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>raw_df <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"rp_201801_202005_df.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+
+</div>
+<p>First of those above commands calls the package (different from installing) The second command assigns the data to <code>raw_df</code> variable. There are two types of assignment operators in R: <code>&lt;-</code> and <code>=</code>. No operation in R is permanent unless you assign it to somewhere (There are exceptions, though. See <code>data.table</code> package for instance.). We will benefit from this property in this document as well. No matter how many operations we do on each example we will always start from the original data frame.</p>
+<p>Let’s do a simple sanity check. The output of the following command reads “21,168 x 17” in the first line, which means there are 21,168 rows and 17 columns in the tibble. Tibble is the name of the data.frame type of dplyr. It usually is data frame plus some advanced features. There are abbreviations of data types under each column name. These are usually character/string (<chr>), numeric (<dbl>, if integer <int>), logical (TRUE/FALSE, logical) (<lgl>), factor (<fct>), date (<date>) and datetime (<dttm>). In the introduction phase we will only use character, numeric and logical data types.</dttm></date></fct></lgl></int></dbl></chr></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(raw_df,<span class="at">n=</span><span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 21,168 × 17
+  dt                  wind_lic geothermal_lic biogas_lic canalType_lic
+  &lt;dttm&gt;                 &lt;dbl&gt;          &lt;dbl&gt;      &lt;dbl&gt;         &lt;dbl&gt;
+1 2020-05-31 23:00:00    1434.           913.       75.8         2585.
+2 2020-05-31 22:00:00    1577.           908.       75.6         2631.
+3 2020-05-31 21:00:00    1858.           901.       75.4         2585.
+# … with 21,165 more rows, and 12 more variables: riverType_lic &lt;dbl&gt;,
+#   biomass_lic &lt;dbl&gt;, landfillGas_lic &lt;dbl&gt;, sun_lic &lt;dbl&gt;,
+#   reservoir_lic &lt;dbl&gt;, others_lic &lt;dbl&gt;, wind_ul &lt;dbl&gt;, biogas_ul &lt;dbl&gt;,
+#   canalType_ul &lt;dbl&gt;, biomass_ul &lt;dbl&gt;, sun_ul &lt;dbl&gt;, others_ul &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<p>Also we can use <code>glimpse</code> function to inspect. Using <code>glimpse</code> each column is represented in a row with its data type and first few entries. Our data consists of hourly renewable electricity production of YEKDEM plants from different origins and license types. YEKDEM is a type of feed-in-tariff incentive framework. Suffixes with “_lic” represents licensed (larger scale) plants and “_ul” represents unlicensed (smaller scale) production. canalType, riverType and reservoir columns represent hydro power.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>raw_df <span class="sc">%&gt;%</span> <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 21,168
+Columns: 17
+$ dt              &lt;dttm&gt; 2020-05-31 23:00:00, 2020-05-31 22:00:00, 2020-05-31 …
+$ wind_lic        &lt;dbl&gt; 1433.8132, 1577.1419, 1857.5492, 1933.0142, 2031.7862,…
+$ geothermal_lic  &lt;dbl&gt; 912.7882, 907.9303, 900.5844, 888.4561, 864.5402, 847.…
+$ biogas_lic      &lt;dbl&gt; 75.8047, 75.6163, 75.3906, 76.7873, 76.9707, 77.5750, …
+$ canalType_lic   &lt;dbl&gt; 2584.930, 2630.602, 2585.038, 2542.381, 2594.459, 2622…
+$ riverType_lic   &lt;dbl&gt; 316.5538, 316.6800, 356.7637, 350.1544, 377.5312, 379.…
+$ biomass_lic     &lt;dbl&gt; 262.4994, 253.0814, 246.9268, 249.9152, 248.2336, 246.…
+$ landfillGas_lic &lt;dbl&gt; 100.3971, 101.1378, 100.4442, 100.7307, 102.2474, 102.…
+$ sun_lic         &lt;dbl&gt; 0.0000, 0.0000, 0.0000, 0.0000, 2.0594, 14.2800, 48.09…
+$ reservoir_lic   &lt;dbl&gt; 2306.303, 2296.045, 2279.266, 2308.918, 2792.313, 3180…
+$ others_lic      &lt;dbl&gt; 48.3833, 48.4011, 48.4041, 48.4199, 48.4653, 48.5485, …
+$ wind_ul         &lt;dbl&gt; 3.7751, 4.8375, 7.6659, 11.8121, 13.1070, 13.1830, 10.…
+$ biogas_ul       &lt;dbl&gt; 16.9293, 16.9227, 16.9052, 16.7517, 16.2928, 16.5989, …
+$ canalType_ul    &lt;dbl&gt; 4.1749, 4.4221, 4.4658, 4.6020, 4.6195, 4.5146, 4.6616…
+$ biomass_ul      &lt;dbl&gt; 15.4698, 15.3609, 16.0483, 15.2271, 15.5563, 15.5007, …
+$ sun_ul          &lt;dbl&gt; 0.0582, 0.0320, 0.0335, 1.3121, 103.3267, 555.5787, 14…
+$ others_ul       &lt;dbl&gt; 0.0610, 0.0395, 0.4136, 0.5508, 0.7106, 1.3775, 2.7468…</code></pre>
+</div>
+</div>
+<p>Did you notice the expression we used this time? Pipe operator makes data analysis and transformation very easy and civilized. We will use pipes frequently in this document and in the future.</p>
+<p>We can connect many functions without calling the variable multiple times with the help of the pipe operator.</p>
+</section>
+</section>
+<section id="fundamentals" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="fundamentals"><span class="header-section-number">2.2</span> Fundamentals</h2>
+<p>In this chapter fundamental functions of <code>dplyr</code> are introduced. Every function will be used in the following examples after it has been introduced. To limit the number of displayed rows, we use the following global option. You can ignore this part in your exercises.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">tibble.print_max =</span> <span class="dv">3</span>, <span class="at">tibble.print_min =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="selectrename" class="level3" data-number="2.2.1">
+<h3 data-number="2.2.1" class="anchored" data-anchor-id="selectrename"><span class="header-section-number">2.2.1</span> <code>select</code>/<code>rename</code></h3>
+<p>Select, as the name suggests, is used to select columns. For instance, suppose we only want licensed wind production (wind_lic) and date-time (dt) columns.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>raw_df <span class="sc">%&gt;%</span> <span class="fu">select</span>(dt,wind_lic)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 21,168 × 2
+  dt                  wind_lic
+  &lt;dttm&gt;                 &lt;dbl&gt;
+1 2020-05-31 23:00:00    1434.
+2 2020-05-31 22:00:00    1577.
+3 2020-05-31 21:00:00    1858.
+# … with 21,165 more rows</code></pre>
+</div>
+</div>
+<p>If we wanted to write the above expression without the pipe operator, we could go with the sad expression below. You can extrapolate how complicated things can be without the pipe.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">select</span>(raw_df,dt,wind_lic)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We can use <code>rename</code> to rename columns (again as the name suggests). Let’s change dt to date_time.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>raw_df <span class="sc">%&gt;%</span> <span class="fu">rename</span>(<span class="at">date_time =</span> dt)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 21,168 × 17
+  date_time           wind_lic geothermal_lic biogas_lic canalType_lic
+  &lt;dttm&gt;                 &lt;dbl&gt;          &lt;dbl&gt;      &lt;dbl&gt;         &lt;dbl&gt;
+1 2020-05-31 23:00:00    1434.           913.       75.8         2585.
+2 2020-05-31 22:00:00    1577.           908.       75.6         2631.
+3 2020-05-31 21:00:00    1858.           901.       75.4         2585.
+# … with 21,165 more rows, and 12 more variables: riverType_lic &lt;dbl&gt;,
+#   biomass_lic &lt;dbl&gt;, landfillGas_lic &lt;dbl&gt;, sun_lic &lt;dbl&gt;,
+#   reservoir_lic &lt;dbl&gt;, others_lic &lt;dbl&gt;, wind_ul &lt;dbl&gt;, biogas_ul &lt;dbl&gt;,
+#   canalType_ul &lt;dbl&gt;, biomass_ul &lt;dbl&gt;, sun_ul &lt;dbl&gt;, others_ul &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<p>p.s. We can rename columns inside select function.</p>
+<p>Select has many convenient sub operators and special expressions. If we know the order of columns, we can use the scope (<code>:</code>) expression to get all the columns determined by the scope. Suppose, we want date-time (dt) and licensed production.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>raw_df <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="at">date_time=</span>dt,wind_lic<span class="sc">:</span>others_lic)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 21,168 × 11
+  date_time           wind_lic geothermal_lic biogas_lic canalType_lic
+  &lt;dttm&gt;                 &lt;dbl&gt;          &lt;dbl&gt;      &lt;dbl&gt;         &lt;dbl&gt;
+1 2020-05-31 23:00:00    1434.           913.       75.8         2585.
+2 2020-05-31 22:00:00    1577.           908.       75.6         2631.
+3 2020-05-31 21:00:00    1858.           901.       75.4         2585.
+# … with 21,165 more rows, and 6 more variables: riverType_lic &lt;dbl&gt;,
+#   biomass_lic &lt;dbl&gt;, landfillGas_lic &lt;dbl&gt;, sun_lic &lt;dbl&gt;,
+#   reservoir_lic &lt;dbl&gt;, others_lic &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<p>We can eliminate unwanted columns by putting <code>-</code> before the names. Suppose I am not interested in wind values, want to remove all other related columns from the data set, and all other related column names start with “wind_”. We can do it using <code>-</code> and <code>starts_with</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>raw_df <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">"wind_"</span>)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 21,168 × 15
+  dt                  geothermal_lic biogas_lic canalType_lic riverType_lic
+  &lt;dttm&gt;                       &lt;dbl&gt;      &lt;dbl&gt;         &lt;dbl&gt;         &lt;dbl&gt;
+1 2020-05-31 23:00:00           913.       75.8         2585.          317.
+2 2020-05-31 22:00:00           908.       75.6         2631.          317.
+3 2020-05-31 21:00:00           901.       75.4         2585.          357.
+# … with 21,165 more rows, and 10 more variables: biomass_lic &lt;dbl&gt;,
+#   landfillGas_lic &lt;dbl&gt;, sun_lic &lt;dbl&gt;, reservoir_lic &lt;dbl&gt;,
+#   others_lic &lt;dbl&gt;, biogas_ul &lt;dbl&gt;, canalType_ul &lt;dbl&gt;, biomass_ul &lt;dbl&gt;,
+#   sun_ul &lt;dbl&gt;, others_ul &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<p>There are similar expressions for other purposes, such as <code>starts_with</code>, <code>everything</code> and <code>contains</code>. You can see all the expressions in the Cheat Sheet link given at the end of this document.</p>
+<p><code>dplyr 1.0.0</code> Feature: Sometimes you just want to change the order of the columns. Then use <code>relocate</code>. Suppose we want to show solar and wind production with date-time. But we want to get licensed wind together with licensed solar.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>raw_df <span class="sc">%&gt;%</span> <span class="fu">select</span>(dt,<span class="fu">starts_with</span>(<span class="st">"sun_"</span>),<span class="fu">starts_with</span>(<span class="st">"wind"</span>)) <span class="sc">%&gt;%</span> <span class="fu">relocate</span>(wind_lic,<span class="at">.before=</span>sun_ul)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 21,168 × 5
+  dt                  sun_lic wind_lic sun_ul wind_ul
+  &lt;dttm&gt;                &lt;dbl&gt;    &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;
+1 2020-05-31 23:00:00       0    1434. 0.0582    3.78
+2 2020-05-31 22:00:00       0    1577. 0.032     4.84
+3 2020-05-31 21:00:00       0    1858. 0.0335    7.67
+# … with 21,165 more rows</code></pre>
+</div>
+</div>
+<p>If we specify nothing, it will be in the first place.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>raw_df <span class="sc">%&gt;%</span> <span class="fu">select</span>(dt,<span class="fu">starts_with</span>(<span class="st">"sun_"</span>),<span class="fu">starts_with</span>(<span class="st">"wind"</span>)) <span class="sc">%&gt;%</span> <span class="fu">relocate</span>(wind_lic)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 21,168 × 5
+  wind_lic dt                  sun_lic sun_ul wind_ul
+     &lt;dbl&gt; &lt;dttm&gt;                &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;
+1    1434. 2020-05-31 23:00:00       0 0.0582    3.78
+2    1577. 2020-05-31 22:00:00       0 0.032     4.84
+3    1858. 2020-05-31 21:00:00       0 0.0335    7.67
+# … with 21,165 more rows</code></pre>
+</div>
+</div>
+<p>We use <code>last_col()</code> if we want to take a column to the end.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>raw_df <span class="sc">%&gt;%</span> <span class="fu">select</span>(dt,<span class="fu">starts_with</span>(<span class="st">"sun_"</span>),<span class="fu">starts_with</span>(<span class="st">"wind"</span>)) <span class="sc">%&gt;%</span> <span class="fu">relocate</span>(dt,<span class="at">.after=</span><span class="fu">last_col</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 21,168 × 5
+  sun_lic sun_ul wind_lic wind_ul dt                 
+    &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt; &lt;dttm&gt;             
+1       0 0.0582    1434.    3.78 2020-05-31 23:00:00
+2       0 0.032     1577.    4.84 2020-05-31 22:00:00
+3       0 0.0335    1858.    7.67 2020-05-31 21:00:00
+# … with 21,165 more rows</code></pre>
+</div>
+</div>
+<p>Honestly, <code>relocate</code> is a very convenient function.</p>
+<section id="selectrename-advanced-usage" class="level4" data-number="2.2.1.1">
+<h4 data-number="2.2.1.1" class="anchored" data-anchor-id="selectrename-advanced-usage"><span class="header-section-number">2.2.1.1</span> <code>select/rename</code> advanced usage</h4>
+<p>Advanced usage subsection introduces extra functionality which can be a bit confusing at the first phase. But, once you get a grasp on the fundamentals check back here as reference. There are several features not available for versions before <code>dplyr 1.0.0</code>.</p>
+<p>We can use <code>rename_with</code> function to rename columns with given criteria. In pipe version of the function, first parameter is the function and the second parameter is the criterion. Let’s replace all “Type” with “_type”. For instance it should change “canalType” to “canal_type”.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>raw_df <span class="sc">%&gt;%</span> <span class="fu">rename_with</span>(<span class="sc">~</span><span class="fu">gsub</span>(<span class="st">"Type"</span>,<span class="st">"_type"</span>,.),<span class="fu">contains</span>(<span class="st">"Type"</span>)) <span class="sc">%&gt;%</span> <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 21,168
+Columns: 17
+$ dt              &lt;dttm&gt; 2020-05-31 23:00:00, 2020-05-31 22:00:00, 2020-05-31 …
+$ wind_lic        &lt;dbl&gt; 1433.8132, 1577.1419, 1857.5492, 1933.0142, 2031.7862,…
+$ geothermal_lic  &lt;dbl&gt; 912.7882, 907.9303, 900.5844, 888.4561, 864.5402, 847.…
+$ biogas_lic      &lt;dbl&gt; 75.8047, 75.6163, 75.3906, 76.7873, 76.9707, 77.5750, …
+$ canal_type_lic  &lt;dbl&gt; 2584.930, 2630.602, 2585.038, 2542.381, 2594.459, 2622…
+$ river_type_lic  &lt;dbl&gt; 316.5538, 316.6800, 356.7637, 350.1544, 377.5312, 379.…
+$ biomass_lic     &lt;dbl&gt; 262.4994, 253.0814, 246.9268, 249.9152, 248.2336, 246.…
+$ landfillGas_lic &lt;dbl&gt; 100.3971, 101.1378, 100.4442, 100.7307, 102.2474, 102.…
+$ sun_lic         &lt;dbl&gt; 0.0000, 0.0000, 0.0000, 0.0000, 2.0594, 14.2800, 48.09…
+$ reservoir_lic   &lt;dbl&gt; 2306.303, 2296.045, 2279.266, 2308.918, 2792.313, 3180…
+$ others_lic      &lt;dbl&gt; 48.3833, 48.4011, 48.4041, 48.4199, 48.4653, 48.5485, …
+$ wind_ul         &lt;dbl&gt; 3.7751, 4.8375, 7.6659, 11.8121, 13.1070, 13.1830, 10.…
+$ biogas_ul       &lt;dbl&gt; 16.9293, 16.9227, 16.9052, 16.7517, 16.2928, 16.5989, …
+$ canal_type_ul   &lt;dbl&gt; 4.1749, 4.4221, 4.4658, 4.6020, 4.6195, 4.5146, 4.6616…
+$ biomass_ul      &lt;dbl&gt; 15.4698, 15.3609, 16.0483, 15.2271, 15.5563, 15.5007, …
+$ sun_ul          &lt;dbl&gt; 0.0582, 0.0320, 0.0335, 1.3121, 103.3267, 555.5787, 14…
+$ others_ul       &lt;dbl&gt; 0.0610, 0.0395, 0.4136, 0.5508, 0.7106, 1.3775, 2.7468…</code></pre>
+</div>
+</div>
+<p>Did you notice <code>~</code> and <code>.</code> in the function? Dot (<code>.</code>) is a representation of the entity. Depending on the situation it can be the latest version of the tibble in the pipe chain, a specific column or something else. <code>~</code> is a special character notifying that function evaluation will be done using the dot notation. We will see more examples of that.</p>
+<p>Let’s introduce <code>where</code>. If is a function from <code>tidyselect</code> package to select variables with a function where it returns TRUE. It is quite handy.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>raw_df <span class="sc">%&gt;%</span> <span class="fu">select</span>(dt,<span class="fu">starts_with</span>(<span class="st">"sun_"</span>),<span class="fu">starts_with</span>(<span class="st">"wind"</span>)) <span class="sc">%&gt;%</span> <span class="fu">relocate</span>(<span class="fu">where</span>(is.numeric))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 21,168 × 5
+  sun_lic sun_ul wind_lic wind_ul dt                 
+    &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt; &lt;dttm&gt;             
+1       0 0.0582    1434.    3.78 2020-05-31 23:00:00
+2       0 0.032     1577.    4.84 2020-05-31 22:00:00
+3       0 0.0335    1858.    7.67 2020-05-31 21:00:00
+# … with 21,165 more rows</code></pre>
+</div>
+</div>
+<p>We can also use <code>any_of</code> or <code>all_of</code> functions in <code>select</code>. The main difference is while the former returns as much as it can, the latter will throw an error if any one of the criteria is not fulfilled. Let’s try to select “dt”, “others_lic” and “nuclear_lic”. Since this data does not include nuclear power production we should not see it.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>raw_df <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="fu">any_of</span>(<span class="fu">c</span>(<span class="st">"dt"</span>,<span class="st">"others_lic"</span>,<span class="st">"nuclear_lic"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 21,168 × 2
+  dt                  others_lic
+  &lt;dttm&gt;                   &lt;dbl&gt;
+1 2020-05-31 23:00:00       48.4
+2 2020-05-31 22:00:00       48.4
+3 2020-05-31 21:00:00       48.4
+# … with 21,165 more rows</code></pre>
+</div>
+</div>
+<p>In order not to break our notebook, we wrap it around <code>try</code> (error handling is another topic).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">try</span>(raw_df <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="fu">all_of</span>(<span class="fu">c</span>(<span class="st">"dt"</span>,<span class="st">"others_lic"</span>,<span class="st">"nuclear_lic"</span>))))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Error : Can't subset columns that don't exist.
+✖ Column `nuclear_lic` doesn't exist.</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="filterdistinct" class="level3" data-number="2.2.2">
+<h3 data-number="2.2.2" class="anchored" data-anchor-id="filterdistinct"><span class="header-section-number">2.2.2</span> <code>filter/distinct</code></h3>
+<p>Filter (no more “as the name suggests”, as you already figured it out) helps filter rows according to given criteria. It is highly similar with Excel’s filter functionality (but much much more flexible and reliable).</p>
+<p>Let’s see the production at <code>2020-05-08 16:00:00</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>raw_df <span class="sc">%&gt;%</span> <span class="fu">filter</span>(dt <span class="sc">==</span> <span class="st">"2020-05-08 16:00:00"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 17
+  dt                  wind_lic geothermal_lic biogas_lic canalType_lic
+  &lt;dttm&gt;                 &lt;dbl&gt;          &lt;dbl&gt;      &lt;dbl&gt;         &lt;dbl&gt;
+1 2020-05-08 16:00:00    2618.           856.       79.8         3896.
+# … with 12 more variables: riverType_lic &lt;dbl&gt;, biomass_lic &lt;dbl&gt;,
+#   landfillGas_lic &lt;dbl&gt;, sun_lic &lt;dbl&gt;, reservoir_lic &lt;dbl&gt;,
+#   others_lic &lt;dbl&gt;, wind_ul &lt;dbl&gt;, biogas_ul &lt;dbl&gt;, canalType_ul &lt;dbl&gt;,
+#   biomass_ul &lt;dbl&gt;, sun_ul &lt;dbl&gt;, others_ul &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<p>By using <code>==</code> operator, we bring the values in <code>dt</code> column which are equal to the hour we desired. There are other expressions such as not equal to (<code>!=</code>), greater than (or equal to) (<code>&gt;</code>,<code>&gt;=</code>), smaller than (or equal to) (<code>&lt;</code>,<code>&lt;=</code>), in (<code>%in%</code>) and some more.</p>
+<p>At the same time we can make comparisons between columns and combine multiple criteria to create more complex filters. Here we use AND (<code>&amp;</code>) and OR (<code>|</code>) operators to combine criteria.</p>
+<p>Suppose we want to find our the times when licensed wind production is greater than all of hydro type licensed production.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>raw_df <span class="sc">%&gt;%</span> <span class="fu">filter</span>(wind_lic <span class="sc">&gt;</span> canalType_lic <span class="sc">&amp;</span> wind_lic <span class="sc">&gt;</span> reservoir_lic <span class="sc">&amp;</span> wind_lic <span class="sc">&gt;</span> riverType_lic)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 11,287 × 17
+  dt                  wind_lic geothermal_lic biogas_lic canalType_lic
+  &lt;dttm&gt;                 &lt;dbl&gt;          &lt;dbl&gt;      &lt;dbl&gt;         &lt;dbl&gt;
+1 2020-05-27 19:00:00    3303.           930.       74.7         2969.
+2 2020-05-27 18:00:00    3596.           914.       75.0         2953.
+3 2020-05-27 17:00:00    3551.           900.       76.3         2954.
+# … with 11,284 more rows, and 12 more variables: riverType_lic &lt;dbl&gt;,
+#   biomass_lic &lt;dbl&gt;, landfillGas_lic &lt;dbl&gt;, sun_lic &lt;dbl&gt;,
+#   reservoir_lic &lt;dbl&gt;, others_lic &lt;dbl&gt;, wind_ul &lt;dbl&gt;, biogas_ul &lt;dbl&gt;,
+#   canalType_ul &lt;dbl&gt;, biomass_ul &lt;dbl&gt;, sun_ul &lt;dbl&gt;, others_ul &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<p>We can add numeric operations as well. Suppose we want to find the total solar production is greater than total wind production.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>raw_df <span class="sc">%&gt;%</span> <span class="fu">filter</span>(wind_lic <span class="sc">+</span> wind_ul <span class="sc">&lt;</span> sun_lic <span class="sc">+</span> sun_ul)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4,949 × 17
+  dt                  wind_lic geothermal_lic biogas_lic canalType_lic
+  &lt;dttm&gt;                 &lt;dbl&gt;          &lt;dbl&gt;      &lt;dbl&gt;         &lt;dbl&gt;
+1 2020-05-31 16:00:00    2036.           843.       76.8         2616.
+2 2020-05-31 15:00:00    1875.           845.       77.4         2685.
+3 2020-05-31 14:00:00    1755.           853.       77.2         2715.
+# … with 4,946 more rows, and 12 more variables: riverType_lic &lt;dbl&gt;,
+#   biomass_lic &lt;dbl&gt;, landfillGas_lic &lt;dbl&gt;, sun_lic &lt;dbl&gt;,
+#   reservoir_lic &lt;dbl&gt;, others_lic &lt;dbl&gt;, wind_ul &lt;dbl&gt;, biogas_ul &lt;dbl&gt;,
+#   canalType_ul &lt;dbl&gt;, biomass_ul &lt;dbl&gt;, sun_ul &lt;dbl&gt;, others_ul &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<p>Suppose we want to filter only the unique values. Then we simply use <code>distinct</code> command. Let’s get unique rounded licensed wind production values.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>raw_df <span class="sc">%&gt;%</span> <span class="fu">distinct</span>(<span class="fu">round</span>(wind_lic))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4,893 × 1
+  `round(wind_lic)`
+              &lt;dbl&gt;
+1              1434
+2              1577
+3              1858
+# … with 4,890 more rows</code></pre>
+</div>
+</div>
+<p>If we want to keep all columns we simply make the parameter <code>.keep=TRUE</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>raw_df <span class="sc">%&gt;%</span> <span class="fu">distinct</span>(<span class="fu">round</span>(wind_lic),<span class="at">.keep=</span><span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4,893 × 2
+  `round(wind_lic)` .keep
+              &lt;dbl&gt; &lt;lgl&gt;
+1              1434 TRUE 
+2              1577 TRUE 
+3              1858 TRUE 
+# … with 4,890 more rows</code></pre>
+</div>
+</div>
+<section id="filterdistinct-advanced-usage" class="level4" data-number="2.2.2.1">
+<h4 data-number="2.2.2.1" class="anchored" data-anchor-id="filterdistinct-advanced-usage"><span class="header-section-number">2.2.2.1</span> <code>filter/distinct</code> advanced usage</h4>
+<p>Let’s introduce <code>slice</code>. This function helps return rows by its row number. Suppose we want the top 5 rows.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>raw_df <span class="sc">%&gt;%</span> <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>) <span class="sc">%&gt;%</span> <span class="fu">print</span>(<span class="at">n=</span><span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 17
+  dt                  wind_lic geothermal_lic biogas_lic canalType_lic
+  &lt;dttm&gt;                 &lt;dbl&gt;          &lt;dbl&gt;      &lt;dbl&gt;         &lt;dbl&gt;
+1 2020-05-31 23:00:00    1434.           913.       75.8         2585.
+2 2020-05-31 22:00:00    1577.           908.       75.6         2631.
+3 2020-05-31 21:00:00    1858.           901.       75.4         2585.
+4 2020-05-31 20:00:00    1933.           888.       76.8         2542.
+5 2020-05-31 19:00:00    2032.           865.       77.0         2594.
+# … with 12 more variables: riverType_lic &lt;dbl&gt;, biomass_lic &lt;dbl&gt;,
+#   landfillGas_lic &lt;dbl&gt;, sun_lic &lt;dbl&gt;, reservoir_lic &lt;dbl&gt;,
+#   others_lic &lt;dbl&gt;, wind_ul &lt;dbl&gt;, biogas_ul &lt;dbl&gt;, canalType_ul &lt;dbl&gt;,
+#   biomass_ul &lt;dbl&gt;, sun_ul &lt;dbl&gt;, others_ul &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<p>If we want to return random rows we have <code>slice_sample</code>. Let’s bring 5 random rows.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>raw_df <span class="sc">%&gt;%</span> <span class="fu">slice_sample</span>(<span class="at">n=</span><span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 17
+  dt                  wind_lic geothermal_lic biogas_lic canalType_lic
+  &lt;dttm&gt;                 &lt;dbl&gt;          &lt;dbl&gt;      &lt;dbl&gt;         &lt;dbl&gt;
+1 2019-07-27 11:00:00    1891.           697.       82.9         1254.
+2 2019-06-16 07:00:00    1834.           827.       76.2         2126.
+3 2019-11-17 18:00:00     762.           802.       80.8          652.
+# … with 2 more rows, and 12 more variables: riverType_lic &lt;dbl&gt;,
+#   biomass_lic &lt;dbl&gt;, landfillGas_lic &lt;dbl&gt;, sun_lic &lt;dbl&gt;,
+#   reservoir_lic &lt;dbl&gt;, others_lic &lt;dbl&gt;, wind_ul &lt;dbl&gt;, biogas_ul &lt;dbl&gt;,
+#   canalType_ul &lt;dbl&gt;, biomass_ul &lt;dbl&gt;, sun_ul &lt;dbl&gt;, others_ul &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<p>If we want to do it proportionately, we have the <code>prop</code> parameter. Let’s say we want 0.1% of the data frame.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>raw_df <span class="sc">%&gt;%</span> <span class="fu">slice_sample</span>(<span class="at">prop=</span><span class="fl">0.001</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 21 × 17
+  dt                  wind_lic geothermal_lic biogas_lic canalType_lic
+  &lt;dttm&gt;                 &lt;dbl&gt;          &lt;dbl&gt;      &lt;dbl&gt;         &lt;dbl&gt;
+1 2019-06-13 06:00:00    1567.           838.       74.0         2309.
+2 2019-07-22 23:00:00    4420.           719.       81.9         1480.
+3 2019-04-12 18:00:00    2337.           814.       84.5         4113.
+# … with 18 more rows, and 12 more variables: riverType_lic &lt;dbl&gt;,
+#   biomass_lic &lt;dbl&gt;, landfillGas_lic &lt;dbl&gt;, sun_lic &lt;dbl&gt;,
+#   reservoir_lic &lt;dbl&gt;, others_lic &lt;dbl&gt;, wind_ul &lt;dbl&gt;, biogas_ul &lt;dbl&gt;,
+#   canalType_ul &lt;dbl&gt;, biomass_ul &lt;dbl&gt;, sun_ul &lt;dbl&gt;, others_ul &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<p>There are other <code>slice_*</code> type functions. These are <code>slice_head</code>/<code>slice_tail</code> for first/last n or percentage of rows. <code>slice_min</code>/<code>slice_max</code> for the top/bottom n rows according to an ordering criteria.</p>
+</section>
+</section>
+<section id="arrange" class="level3" data-number="2.2.3">
+<h3 data-number="2.2.3" class="anchored" data-anchor-id="arrange"><span class="header-section-number">2.2.3</span> <code>arrange</code></h3>
+<p>Arrange sorts rows from A to Z or smallest to largest. It has great similarity with Excel’s Sort functionality.</p>
+<p>Let’s sort licensed reservoir production from largest to smallest.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>raw_df <span class="sc">%&gt;%</span> <span class="fu">select</span>(dt,reservoir_lic) <span class="sc">%&gt;%</span> <span class="fu">arrange</span>(<span class="fu">desc</span>(reservoir_lic))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 21,168 × 2
+  dt                  reservoir_lic
+  &lt;dttm&gt;                      &lt;dbl&gt;
+1 2019-05-10 23:00:00         5058.
+2 2019-05-10 21:00:00         5035.
+3 2019-05-15 02:00:00         5019.
+# … with 21,165 more rows</code></pre>
+</div>
+</div>
+<p>Do you see <code>desc()</code> function inside <code>arrange</code>? By default <code>arrange</code> sorts a column by first to last or A-Z. <code>desc</code> reverses this.</p>
+<p>You can also use multiple sorting criteria and use operations inside <code>arrange</code>. Let’s arrange by licensed wind production rounded down (<code>floor</code>) in 100s range (e.g.&nbsp;5634 = 5600 and 5693 = 5600 as well). Then we sort by date time to see the first time the production entered a 100-range in the data time period.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>raw_df <span class="sc">%&gt;%</span> <span class="fu">arrange</span>(<span class="fu">desc</span>(<span class="fu">floor</span>(wind_lic<span class="sc">/</span><span class="dv">100</span>)<span class="sc">*</span><span class="dv">100</span>),dt)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 21,168 × 17
+  dt                  wind_lic geothermal_lic biogas_lic canalType_lic
+  &lt;dttm&gt;                 &lt;dbl&gt;          &lt;dbl&gt;      &lt;dbl&gt;         &lt;dbl&gt;
+1 2019-09-15 17:00:00    5767.           691.       83.0          922.
+2 2018-09-26 19:00:00    5622.           672.       67.8          951.
+3 2019-09-15 15:00:00    5628.           692.       81.4          901.
+# … with 21,165 more rows, and 12 more variables: riverType_lic &lt;dbl&gt;,
+#   biomass_lic &lt;dbl&gt;, landfillGas_lic &lt;dbl&gt;, sun_lic &lt;dbl&gt;,
+#   reservoir_lic &lt;dbl&gt;, others_lic &lt;dbl&gt;, wind_ul &lt;dbl&gt;, biogas_ul &lt;dbl&gt;,
+#   canalType_ul &lt;dbl&gt;, biomass_ul &lt;dbl&gt;, sun_ul &lt;dbl&gt;, others_ul &lt;dbl&gt;</code></pre>
+</div>
+</div>
+</section>
+<section id="mutatetransmute" class="level3" data-number="2.2.4">
+<h3 data-number="2.2.4" class="anchored" data-anchor-id="mutatetransmute"><span class="header-section-number">2.2.4</span> <code>mutate</code>/<code>transmute</code></h3>
+<p>Mutate is the function when we do operations and calculations using other columns.</p>
+<p>For instance let’s calculate wind power’s share in total renewables production at each hour.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>raw_df <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">wind_lic_perc =</span> wind_lic <span class="sc">/</span> (wind_lic <span class="sc">+</span> geothermal_lic <span class="sc">+</span> biogas_lic <span class="sc">+</span> canalType_lic <span class="sc">+</span> riverType_lic <span class="sc">+</span> biomass_lic <span class="sc">+</span> landfillGas_lic <span class="sc">+</span> sun_lic <span class="sc">+</span> reservoir_lic <span class="sc">+</span> others_lic <span class="sc">+</span> wind_ul <span class="sc">+</span> biogas_ul <span class="sc">+</span> canalType_ul <span class="sc">+</span> biomass_ul <span class="sc">+</span> sun_ul <span class="sc">+</span> others_ul)) <span class="sc">%&gt;%</span> <span class="fu">select</span>(dt, wind_lic_perc)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 21,168 × 2
+  dt                  wind_lic_perc
+  &lt;dttm&gt;                      &lt;dbl&gt;
+1 2020-05-31 23:00:00         0.177
+2 2020-05-31 22:00:00         0.191
+3 2020-05-31 21:00:00         0.219
+# … with 21,165 more rows</code></pre>
+</div>
+</div>
+<p>You can use many R functions (from both base functions and other packages). For instance to calculate “competition” wind and solar we can use the following expression.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>raw_df <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">wind_or_solar =</span> <span class="fu">ifelse</span>(wind_lic <span class="sc">+</span> wind_ul <span class="sc">&gt;</span> sun_lic <span class="sc">+</span> sun_ul, <span class="st">"wind"</span>, <span class="st">"solar"</span>)) <span class="sc">%&gt;%</span> <span class="fu">select</span>(dt,wind_or_solar)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 21,168 × 2
+  dt                  wind_or_solar
+  &lt;dttm&gt;              &lt;chr&gt;        
+1 2020-05-31 23:00:00 wind         
+2 2020-05-31 22:00:00 wind         
+3 2020-05-31 21:00:00 wind         
+# … with 21,165 more rows</code></pre>
+</div>
+</div>
+<p>Transmute has the same functionality as mutate with the additional property similar to <code>select</code>. Transmute returns only the columns included in the function. Suppose we also want to calculate the difference between total wind and total solar.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>raw_df <span class="sc">%&gt;%</span> <span class="fu">transmute</span>(dt, <span class="at">wind_or_solar =</span> <span class="fu">ifelse</span>(wind_lic <span class="sc">+</span> wind_ul <span class="sc">&gt;</span> sun_lic <span class="sc">+</span> sun_ul, <span class="st">"wind"</span>, <span class="st">"solar"</span>), <span class="at">absdiff =</span> <span class="fu">abs</span>(wind_lic <span class="sc">+</span> wind_ul <span class="sc">-</span> sun_lic <span class="sc">-</span> sun_ul))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 21,168 × 3
+  dt                  wind_or_solar absdiff
+  &lt;dttm&gt;              &lt;chr&gt;           &lt;dbl&gt;
+1 2020-05-31 23:00:00 wind            1438.
+2 2020-05-31 22:00:00 wind            1582.
+3 2020-05-31 21:00:00 wind            1865.
+# … with 21,165 more rows</code></pre>
+</div>
+</div>
+<section id="mutatetransmute-advanced-usage" class="level4" data-number="2.2.4.1">
+<h4 data-number="2.2.4.1" class="anchored" data-anchor-id="mutatetransmute-advanced-usage"><span class="header-section-number">2.2.4.1</span> <code>mutate/transmute</code> advanced usage</h4>
+<p>Suppose we want to see the difference between the previous and next hour’s production. We offset rows using <code>lead</code> and <code>lag</code> functions. But remember lead and lag does not actually give you “next/previous hour’s” values, just the rows. You may need to arrange your data.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>raw_df <span class="sc">%&gt;%</span> <span class="fu">transmute</span>(dt, wind_lic, <span class="at">wind_lic_prev_h =</span> <span class="fu">lead</span>(wind_lic,<span class="dv">1</span>), <span class="at">wind_lic_next_h =</span> <span class="fu">lag</span>(wind_lic,<span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 21,168 × 4
+  dt                  wind_lic wind_lic_prev_h wind_lic_next_h
+  &lt;dttm&gt;                 &lt;dbl&gt;           &lt;dbl&gt;           &lt;dbl&gt;
+1 2020-05-31 23:00:00    1434.           1577.             NA 
+2 2020-05-31 22:00:00    1577.           1858.           1434.
+3 2020-05-31 21:00:00    1858.           1933.           1577.
+# … with 21,165 more rows</code></pre>
+</div>
+</div>
+<p>If you want to use the same function over several columns, you can use the new <code>across</code> function. Let’s round every numeric column to one significant digit.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>raw_df <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric),<span class="sc">~</span><span class="fu">round</span>(.,<span class="dv">1</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 21,168 × 17
+  dt                  wind_lic geothermal_lic biogas_lic canalType_lic
+  &lt;dttm&gt;                 &lt;dbl&gt;          &lt;dbl&gt;      &lt;dbl&gt;         &lt;dbl&gt;
+1 2020-05-31 23:00:00    1434.           913.       75.8         2585.
+2 2020-05-31 22:00:00    1577.           908.       75.6         2631.
+3 2020-05-31 21:00:00    1858.           901.       75.4         2585 
+# … with 21,165 more rows, and 12 more variables: riverType_lic &lt;dbl&gt;,
+#   biomass_lic &lt;dbl&gt;, landfillGas_lic &lt;dbl&gt;, sun_lic &lt;dbl&gt;,
+#   reservoir_lic &lt;dbl&gt;, others_lic &lt;dbl&gt;, wind_ul &lt;dbl&gt;, biogas_ul &lt;dbl&gt;,
+#   canalType_ul &lt;dbl&gt;, biomass_ul &lt;dbl&gt;, sun_ul &lt;dbl&gt;, others_ul &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<p>We can also specify columns. Let’s see the comparative production of wind and reservoir hydro against the unlicensed solar production. We just increment solar production by 1 to prevent any infinity values.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>raw_df <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">sun_ul =</span> sun_ul <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span> <span class="fu">transmute</span>(dt,<span class="fu">across</span>(<span class="fu">c</span>(wind_lic,reservoir_lic),<span class="sc">~</span><span class="fu">round</span>(.<span class="sc">/</span>sun_ul,<span class="dv">2</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 21,168 × 3
+  dt                  wind_lic reservoir_lic
+  &lt;dttm&gt;                 &lt;dbl&gt;         &lt;dbl&gt;
+1 2020-05-31 23:00:00    1355.         2179.
+2 2020-05-31 22:00:00    1528.         2225.
+3 2020-05-31 21:00:00    1797.         2205.
+# … with 21,165 more rows</code></pre>
+</div>
+</div>
+<p>If there are multiple conditions <code>ifelse</code> is not enough. It is possible to use <code>case_when</code> to specify multiple conditions and outcomes.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>raw_df <span class="sc">%&gt;%</span> <span class="fu">transmute</span>(dt, <span class="at">solar_production_level =</span> <span class="fu">case_when</span>(sun_ul <span class="sc">&gt;</span> <span class="fu">quantile</span>(sun_ul,<span class="fl">0.9</span>) <span class="sc">~</span> <span class="st">"very high"</span>, sun_ul <span class="sc">&gt;</span> <span class="fu">quantile</span>(sun_ul, <span class="fl">0.75</span>) <span class="sc">~</span> <span class="st">"high"</span>, sun_ul <span class="sc">&gt;</span> <span class="fu">quantile</span>(sun_ul, <span class="fl">0.5</span>) <span class="sc">~</span> <span class="st">"above median"</span>, <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"below median"</span>))  <span class="sc">%&gt;%</span> <span class="fu">slice</span>(<span class="dv">7</span><span class="sc">:</span><span class="dv">9</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 2
+  dt                  solar_production_level
+  &lt;dttm&gt;              &lt;chr&gt;                 
+1 2020-05-31 17:00:00 above median          
+2 2020-05-31 16:00:00 high                  
+3 2020-05-31 15:00:00 very high             </code></pre>
+</div>
+</div>
+<p><code>rowwise</code> is actually a type of <code>group_by/summarise</code> function but as the name suggests it allows us to do row-wise operations. Let’s calculate row sums by using <code>c_across</code> function and <code>rowwise</code>. Oh and also now, experimentally, you can use relocate functionality in <code>mutate/transmute</code>. So, conveniently we can place it after date time.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>raw_df <span class="sc">%&gt;%</span> <span class="fu">slice_head</span>(<span class="at">n=</span><span class="dv">5</span>) <span class="sc">%&gt;%</span> <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">total_prod =</span> <span class="fu">sum</span>(<span class="fu">c_across</span>(<span class="fu">where</span>(is.numeric))),<span class="at">.after=</span>dt)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 18
+# Rowwise: 
+  dt                  total_prod wind_lic geothermal_lic biogas_lic
+  &lt;dttm&gt;                   &lt;dbl&gt;    &lt;dbl&gt;          &lt;dbl&gt;      &lt;dbl&gt;
+1 2020-05-31 23:00:00      8082.    1434.           913.       75.8
+2 2020-05-31 22:00:00      8248.    1577.           908.       75.6
+3 2020-05-31 21:00:00      8496.    1858.           901.       75.4
+# … with 2 more rows, and 13 more variables: canalType_lic &lt;dbl&gt;,
+#   riverType_lic &lt;dbl&gt;, biomass_lic &lt;dbl&gt;, landfillGas_lic &lt;dbl&gt;,
+#   sun_lic &lt;dbl&gt;, reservoir_lic &lt;dbl&gt;, others_lic &lt;dbl&gt;, wind_ul &lt;dbl&gt;,
+#   biogas_ul &lt;dbl&gt;, canalType_ul &lt;dbl&gt;, biomass_ul &lt;dbl&gt;, sun_ul &lt;dbl&gt;,
+#   others_ul &lt;dbl&gt;</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="group_bysummarise" class="level3" data-number="2.2.5">
+<h3 data-number="2.2.5" class="anchored" data-anchor-id="group_bysummarise"><span class="header-section-number">2.2.5</span> <code>group_by</code>/<code>summarise</code></h3>
+<p>Finally we will learn how to calculate summary tables. It is similar to Pivot Tables in Excel. <code>group_by</code> is the grouping function, <code>summarise</code> is the summarising function.</p>
+<p>For instance let’s calculate number of hours where wind production is above 3000 MWh. We will use a special function <code>n()</code> to calculate number of rows. We can define groupings just like <code>mutate</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a>raw_df <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(<span class="at">production_group =</span> <span class="fu">cut</span>(wind_lic <span class="sc">+</span> wind_ul,<span class="at">breaks=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1000</span>,<span class="dv">2000</span>,<span class="dv">3000</span>,<span class="dv">4000</span>,<span class="dv">5000</span>,<span class="dv">6000</span>),<span class="at">include.lowest =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span> <span class="fu">summarise</span>(<span class="at">count =</span> <span class="fu">n</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 2
+  production_group count
+  &lt;fct&gt;            &lt;int&gt;
+1 [0,1e+03]         4294
+2 (1e+03,2e+03]     5733
+3 (2e+03,3e+03]     4725
+# … with 3 more rows</code></pre>
+</div>
+</div>
+<p>Normally, we get one result for each group and summary function. From <code>dplyr 1.0.0</code> we can have multiple row summarise for each group. Let’s say we want to find the minimum and maximum licensed wind production ranges for each year. But, be warned, it can be a little confusing.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a>raw_df <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(<span class="at">year =</span> lubridate<span class="sc">::</span><span class="fu">year</span>(dt)) <span class="sc">%&gt;%</span> <span class="fu">summarise</span>(<span class="at">wind_lic_range =</span> <span class="fu">range</span>(wind_lic))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`summarise()` has grouped output by 'year'. You can override using the `.groups` argument.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 2
+# Groups:   year [3]
+   year wind_lic_range
+  &lt;dbl&gt;          &lt;dbl&gt;
+1  2018           46.2
+2  2018         5622. 
+3  2019           32.8
+# … with 3 more rows</code></pre>
+</div>
+</div>
+<section id="group_bysummarise-advanced-usage" class="level4" data-number="2.2.5.1">
+<h4 data-number="2.2.5.1" class="anchored" data-anchor-id="group_bysummarise-advanced-usage"><span class="header-section-number">2.2.5.1</span> <code>group_by</code>/<code>summarise</code> advanced usage</h4>
+<p>Just like <code>mutate/transmute</code> you can use <code>across</code> in <code>summarise</code> as well. Let’s see median production of each year and each source. In this example we can also use the named list version of the functions and additional names structure.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a>raw_df <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(<span class="at">year =</span> lubridate<span class="sc">::</span><span class="fu">year</span>(dt)) <span class="sc">%&gt;%</span> <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric),<span class="fu">list</span>(<span class="at">med=</span>median),<span class="at">.names=</span><span class="st">"{fn}_{col}"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 17
+   year med_wind_lic med_geothermal_lic med_biogas_lic med_canalType_lic
+  &lt;dbl&gt;        &lt;dbl&gt;              &lt;dbl&gt;          &lt;dbl&gt;             &lt;dbl&gt;
+1  2018        1989.               694.           66.4             1480.
+2  2019        2136.               814.           80.9             1575.
+3  2020        2297.               951.           78.5             2779.
+# … with 12 more variables: med_riverType_lic &lt;dbl&gt;, med_biomass_lic &lt;dbl&gt;,
+#   med_landfillGas_lic &lt;dbl&gt;, med_sun_lic &lt;dbl&gt;, med_reservoir_lic &lt;dbl&gt;,
+#   med_others_lic &lt;dbl&gt;, med_wind_ul &lt;dbl&gt;, med_biogas_ul &lt;dbl&gt;,
+#   med_canalType_ul &lt;dbl&gt;, med_biomass_ul &lt;dbl&gt;, med_sun_ul &lt;dbl&gt;,
+#   med_others_ul &lt;dbl&gt;</code></pre>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="exercises" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="exercises"><span class="header-section-number">2.3</span> Exercises</h2>
+<p>Solve the following exercises. Outputs are given below, you are expected write code to match the outputs.</p>
+<ol type="1">
+<li>Find the mean and standard deviation of licensed geothermal productions in all years. (Tip: Use <code>lubridate::year</code> to get years from date data.)</li>
+</ol>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 3
+   year mean_geo sd_geo
+  &lt;dbl&gt;    &lt;dbl&gt;  &lt;dbl&gt;
+1  2018     681.   65.2
+2  2019     799.   74.2
+3  2020     935.   59.0</code></pre>
+</div>
+</div>
+<ol start="2" type="1">
+<li>Find the hourly average unlicensed solar (sun_ul) production levels for May 2020.</li>
+</ol>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 24 × 2
+   hour avg_prod
+  &lt;int&gt;    &lt;dbl&gt;
+1     0     0.17
+2     1     0.37
+3     2     0.7 
+# … with 21 more rows</code></pre>
+</div>
+</div>
+<ol start="3" type="1">
+<li>Find the average daily percentage change of licensed biomass (biomass_lic) in 2019. (e.g.&nbsp;Suppose daily production is 50 in day 1 and 53 in day 2, then the change should be (53-50)/50 -1 = 0.06) (Tip: Use <code>lubridate::as_date</code> to convert date time to date. Use <code>lag</code> and <code>lead</code> functions to offset values.)</li>
+</ol>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 1
+  average_change
+           &lt;dbl&gt;
+1        0.00282</code></pre>
+</div>
+</div>
+<ol start="4" type="1">
+<li>Find the yearly total production levels in TWh (Current values are in MWh. 1 GWh is 1000 MWh and 1 TWh is 1000 GWh). (Tip: In order to avoid a lengthy summation you can use <code>tidyr::pivot_longer</code> to get a long format.)</li>
+</ol>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 2
+   year total_production
+  &lt;dbl&gt;            &lt;dbl&gt;
+1  2018             62.6
+2  2019             76.7
+3  2020             37.3</code></pre>
+</div>
+</div>
+</section>
+<section id="conclusion" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="conclusion"><span class="header-section-number">2.4</span> Conclusion</h2>
+<p>Fundamental <code>dplyr</code> functions provide very convenient tools for data analysis. It can also be used to generate the features required for modelling. You can process few million rows of data without breaking a sweat (for larger data sets you can use <code>data.table</code>), you can prepare functions instead of manual Excel operations. With R Markdown system, which this tutorial is prepared in, you can create reproducible documents and automatize the reports. You can use <code>ggplot2</code> for visualizations, which is also part of the tidyverse package ecosystem.</p>
+</section>
+<section id="appendix" class="level2" data-number="2.5">
+<h2 data-number="2.5" class="anchored" data-anchor-id="appendix"><span class="header-section-number">2.5</span> Appendix</h2>
+<section id="mini-lubridate-tutorial" class="level3" data-number="2.5.1">
+<h3 data-number="2.5.1" class="anchored" data-anchor-id="mini-lubridate-tutorial"><span class="header-section-number">2.5.1</span> Mini lubridate tutorial</h3>
+<p>In this tutorial we use a small portion of a very powerful package, <code>lubridate</code>. You can see the official website <a href="https://lubridate.tidyverse.org/">here</a>.</p>
+<p>Let’s take just 3 dates at random from our data set.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb77"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">5</span>)</span>
+<span id="cb77-2"><a href="#cb77-2" aria-hidden="true" tabindex="-1"></a>lub_df <span class="ot">&lt;-</span> </span>
+<span id="cb77-3"><a href="#cb77-3" aria-hidden="true" tabindex="-1"></a>raw_df <span class="sc">%&gt;%</span> </span>
+<span id="cb77-4"><a href="#cb77-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(dt) <span class="sc">%&gt;%</span></span>
+<span id="cb77-5"><a href="#cb77-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sample_n</span>(<span class="dv">3</span>)</span>
+<span id="cb77-6"><a href="#cb77-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb77-7"><a href="#cb77-7" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(lub_df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 1
+  dt                 
+  &lt;dttm&gt;             
+1 2018-12-02 06:00:00
+2 2019-01-12 05:00:00
+3 2018-04-16 09:00:00</code></pre>
+</div>
+</div>
+<p>Since we called lubridate at the beginning of this tutorial we do not need to call by package reference (<code>lubridate::</code>) but it is generally good practice.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb79"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a>lub_df <span class="sc">%&gt;%</span> </span>
+<span id="cb79-2"><a href="#cb79-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb79-3"><a href="#cb79-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">year =</span> lubridate<span class="sc">::</span><span class="fu">year</span>(dt),</span>
+<span id="cb79-4"><a href="#cb79-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">month =</span> lubridate<span class="sc">::</span><span class="fu">month</span>(dt),</span>
+<span id="cb79-5"><a href="#cb79-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">day =</span> lubridate<span class="sc">::</span><span class="fu">day</span>(dt),</span>
+<span id="cb79-6"><a href="#cb79-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">week_day =</span> lubridate<span class="sc">::</span><span class="fu">wday</span>(dt),</span>
+<span id="cb79-7"><a href="#cb79-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">wday_label =</span> lubridate<span class="sc">::</span><span class="fu">wday</span>(dt,<span class="at">label=</span><span class="cn">TRUE</span>),</span>
+<span id="cb79-8"><a href="#cb79-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">hour =</span> lubridate<span class="sc">::</span><span class="fu">hour</span>(dt),</span>
+<span id="cb79-9"><a href="#cb79-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">minute =</span> lubridate<span class="sc">::</span><span class="fu">minute</span>(dt),</span>
+<span id="cb79-10"><a href="#cb79-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">second =</span> lubridate<span class="sc">::</span><span class="fu">second</span>(dt)</span>
+<span id="cb79-11"><a href="#cb79-11" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 9
+  dt                   year month   day week_day wday_label  hour minute second
+  &lt;dttm&gt;              &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt;    &lt;dbl&gt; &lt;ord&gt;      &lt;int&gt;  &lt;int&gt;  &lt;dbl&gt;
+1 2018-12-02 06:00:00  2018    12     2        1 Sun            6      0      0
+2 2019-01-12 05:00:00  2019     1    12        7 Sat            5      0      0
+3 2018-04-16 09:00:00  2018     4    16        2 Mon            9      0      0</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="references" class="level2" data-number="2.6">
+<h2 data-number="2.6" class="anchored" data-anchor-id="references"><span class="header-section-number">2.6</span> References</h2>
+<ul>
+<li>Data Set: <a href="https://seffaflik.epias.com.tr/transparency/index.xhtml">EPIAS/EXIST Transparency Platform</a></li>
+<li>Tidyverse: <a href="">https://www.tidyverse.org/</a></li>
+<li>R for Data Science: <a href="">https://r4ds.had.co.nz/</a></li>
+<li><a href="https://www.rstudio.com/resources/cheatsheets/">Cheatsheet (Data Transformation)</a> <a href="https://github.com/rstudio/cheatsheets/raw/master/translations/turkish/data-transformation_turkish.pdf">(Turkish Version)</a></li>
+</ul>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./intro.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./summary.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Summary</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>

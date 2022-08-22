@@ -1,0 +1,5 @@
+# Welcome {.unnumbered}
+
+This "book", Book of Exploratory Data Analysis (EDA), is actually the organized lecture notes of the course MEF BDA 503. 
+
+Materials will progressively emerge...

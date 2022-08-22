@@ -1,0 +1,393 @@
+---
+title: "dplyr"
+author: "Berk Orbay"
+date: "2020-06-01"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+answer_echo = FALSE
+```
+
+## Introduction to dplyr 1.0.0+
+
+Main purpose of this document is to introduce a major data manipulation package, `dplyr`, with a contemporary subject. There are seven fundamental `dplyr` functions: `select`/`rename`, `filter`, `distinct`, `arrange`, `mutate`/`transmute`, `group_by` and `summarise` with a number of assisting functions used either in these functions or separately. In this document, we will cover every one of them and there will be supplementary functions to carry out data operations. Also, pipe operator (`%>%`) will be briefly introduced. This document is updated for `dplyr 1.0.0` and `R 4.0+` to show you new stuff as well. We will also use `lubridate` package for date time operations but we will not cover it except for quick explanations (check appendix at the end of this document for a mini tutorial). You can use advanced features in the "Advance Usage" subsections.
+
+### Preparations
+
+There are two prerequisites to start: Install `tidyverse` package and putting the relevant data set into the working directory (write `getwd()` in the console to locate your working directory). In this document, topic of the data set is the hourly licensed and unlicensed renewable energy production data between January 1, 2018 and May 31, 2020. 
+
+To install the package run `install.packages("tidyverse")` in the console and select a mirror (first one is quite ok). Once you install the library you can always call it with `library(tidyverse)` command (**no need to reinstall**). You can download the data set from its **[GitHub Repository](https://github.com/berkorbay/datasets/raw/master/renewables_production/rp_201801_202005_df.rds)**.
+
+```{r,eval=FALSE, warning=FALSE,message=FALSE}
+library(tidyverse) #tidyverse is a package group which includes dplyr as well
+library(lubridate)
+raw_df <- readRDS("rp_201801_202005_df.rds")
+```
+
+```{r,echo=FALSE,message=FALSE,warning=FALSE}
+library(tidyverse) #tidyverse is a package group which includes dplyr as well
+library(lubridate)
+raw_df <- readRDS("~/git_repositories/datasets/renewables_production/rp_201801_202005_df.rds")
+```
+
+First of those above commands calls the package (different from installing) The second command assigns the data to `raw_df` variable. There are two types of assignment operators in R: `<-` and `=`. No operation in R is permanent unless you assign it to somewhere (There are exceptions, though. See `data.table` package for instance.). We will benefit from this property in this document as well. No matter how many operations we do on each example we will always start from the original data frame.
+
+Let's do a simple sanity check. The output of the following command reads "21,168 x 17" in the first line, which means there are 21,168 rows and 17 columns in the tibble. Tibble is the name of the data.frame type of dplyr. It usually is data frame plus some advanced features. There are abbreviations of data types under each column name. These are usually character/string (<chr>), numeric (<dbl>, if integer <int>), logical (TRUE/FALSE, logical) (<lgl>), factor (<fct>), date (<date>) and datetime (<dttm>). In the introduction phase we will only use character, numeric and logical data types.
+
+```{r}
+print(raw_df,n=3)
+```
+
+Also we can use `glimpse` function to inspect. Using `glimpse` each column is represented in a row with its data type and first few entries. Our data consists of hourly renewable electricity production of YEKDEM plants from different origins and license types. YEKDEM is a type of feed-in-tariff incentive framework. Suffixes with "_lic" represents licensed (larger scale) plants and "_ul" represents unlicensed (smaller scale) production. canalType, riverType and reservoir columns represent hydro power.
+
+```{r}
+raw_df %>% glimpse()
+```
+
+Did you notice the expression we used this time? Pipe operator makes data analysis and transformation very easy and civilized. We will use pipes frequently in this document and in the future.
+
+We can connect many functions without calling the variable multiple times with the help of the pipe operator.
+
+## Fundamentals
+
+In this chapter fundamental functions of `dplyr` are introduced. Every function will be used in the following examples after it has been introduced. To limit the number of displayed rows, we use the following global option. You can ignore this part in your exercises.
+
+```{r}
+options(tibble.print_max = 3, tibble.print_min = 3)
+```
+
+### `select`/`rename`
+
+Select, as the name suggests, is used to select columns. For instance, suppose we only want licensed wind production (wind_lic) and date-time (dt) columns.
+
+```{r}
+raw_df %>% select(dt,wind_lic)
+```
+
+If we wanted to write the above expression without the pipe operator, we could go with the sad expression below. You can extrapolate how complicated things can be without the pipe.
+
+```{r,eval=FALSE}
+select(raw_df,dt,wind_lic)
+```
+
+We can use `rename` to rename columns (again as the name suggests). Let's change dt to date_time.
+
+```{r}
+raw_df %>% rename(date_time = dt)
+```
+p.s. We can rename columns inside select function.
+
+Select has many convenient sub operators and special expressions. If we know the order of columns, we can use the scope (`:`) expression to get all the columns determined by the scope. Suppose, we want date-time (dt) and licensed production.
+
+
+```{r}
+raw_df %>% select(date_time=dt,wind_lic:others_lic)
+```
+
+We can eliminate unwanted columns by putting `-` before the names. Suppose I am not interested in wind values, want to remove all other related columns from the data set, and all other related column names start with "wind_". We can do it using `-` and `starts_with`.
+
+```{r}
+raw_df %>% select(-starts_with("wind_")) 
+```
+
+There are similar expressions for other purposes, such as `starts_with`, `everything` and `contains`. You can see all the expressions in the Cheat Sheet link given at the end of this document.
+
+`dplyr 1.0.0` Feature: Sometimes you just want to change the order of the columns. Then use `relocate`. Suppose we want to show solar and wind production with date-time. But we want to get licensed wind together with licensed solar.
+
+```{r}
+raw_df %>% select(dt,starts_with("sun_"),starts_with("wind")) %>% relocate(wind_lic,.before=sun_ul)
+```
+If we specify nothing, it will be in the first place.
+
+```{r}
+raw_df %>% select(dt,starts_with("sun_"),starts_with("wind")) %>% relocate(wind_lic)
+```
+
+We use `last_col()` if we want to take a column to the end.
+
+```{r}
+raw_df %>% select(dt,starts_with("sun_"),starts_with("wind")) %>% relocate(dt,.after=last_col())
+```
+
+
+Honestly, `relocate` is a very convenient function. 
+
+#### `select/rename` advanced usage
+
+Advanced usage subsection introduces extra functionality which can be a bit confusing at the first phase. But, once you get a grasp on the fundamentals check back here as reference. There are several features not available for versions before `dplyr 1.0.0`.
+
+We can use `rename_with` function to rename columns with given criteria. In pipe version of the function, first parameter is the function and the second parameter is the criterion. Let's replace all "Type" with "_type". For instance it should change "canalType" to "canal_type".
+
+```{r}
+raw_df %>% rename_with(~gsub("Type","_type",.),contains("Type")) %>% glimpse()
+```
+
+Did you notice `~` and `.` in the function? Dot (`.`) is a representation of the entity. Depending on the situation it can be the latest version of the tibble in the pipe chain, a specific column or something else. `~` is a special character notifying that function evaluation will be done using the dot notation. We will see more examples of that.
+
+Let's introduce `where`. If is a function from `tidyselect` package to select variables with a function where it returns TRUE. It is quite handy.
+
+```{r}
+raw_df %>% select(dt,starts_with("sun_"),starts_with("wind")) %>% relocate(where(is.numeric))
+```
+We can also use `any_of` or `all_of` functions in `select`. The main difference is while the former returns as much as it can, the latter will throw an error if any one of the criteria is not fulfilled. Let's try to select "dt", "others_lic" and "nuclear_lic". Since this data does not include nuclear power production we should not see it.
+
+```{r}
+raw_df %>% select(any_of(c("dt","others_lic","nuclear_lic")))
+```
+
+In order not to break our notebook, we wrap it around `try` (error handling is another topic).
+
+```{r}
+try(raw_df %>% select(all_of(c("dt","others_lic","nuclear_lic"))))
+```
+
+### `filter/distinct`
+
+Filter (no more "as the name suggests", as you already figured it out) helps filter rows according to given criteria. It is highly similar with Excel's filter functionality (but much much more flexible and reliable).
+
+Let's see the production at `2020-05-08 16:00:00`.
+
+```{r}
+raw_df %>% filter(dt == "2020-05-08 16:00:00")
+```
+
+By using `==` operator, we bring the values in `dt` column which are equal to the hour we desired. There are other expressions such as not equal to (`!=`), greater than (or equal to) (`>`,`>=`), smaller than (or equal to)  (`<`,`<=`), in (`%in%`) and some more.
+
+At the same time we can make comparisons between columns and combine multiple criteria to create more complex filters. Here we use AND (`&`) and OR (`|`) operators to combine criteria.
+
+Suppose we want to find our the times when licensed wind production is greater than all of hydro type licensed production.
+
+```{r}
+raw_df %>% filter(wind_lic > canalType_lic & wind_lic > reservoir_lic & wind_lic > riverType_lic)
+```
+
+We can add numeric operations as well. Suppose we want to find the total solar production is greater than total wind production.
+
+```{r}
+raw_df %>% filter(wind_lic + wind_ul < sun_lic + sun_ul)
+```
+
+Suppose we want to filter only the unique values. Then we simply use `distinct` command. Let's get unique rounded licensed wind production values.
+
+```{r}
+raw_df %>% distinct(round(wind_lic))
+```
+If we want to keep all columns we simply make the parameter `.keep=TRUE`.
+
+```{r}
+raw_df %>% distinct(round(wind_lic),.keep=TRUE)
+```
+#### `filter/distinct` advanced usage
+
+Let's introduce `slice`. This function helps return rows by its row number. Suppose we want the top 5 rows.
+
+```{r}
+raw_df %>% slice(1:5) %>% print(n=5)
+```
+
+If we want to return random rows we have `slice_sample`. Let's bring 5 random rows.
+
+```{r}
+raw_df %>% slice_sample(n=5)
+```
+
+If we want to do it proportionately, we have the `prop` parameter. Let's say we want 0.1% of the data frame.
+
+```{r}
+raw_df %>% slice_sample(prop=0.001)
+```
+There are other `slice_*` type functions. These are `slice_head`/`slice_tail` for first/last n or percentage of rows. `slice_min`/`slice_max` for the top/bottom n rows according to an ordering criteria.
+
+### `arrange`
+
+Arrange sorts rows from A to Z or smallest to largest. It has great similarity with Excel's Sort functionality.
+
+Let's sort licensed reservoir production from largest to smallest.
+
+```{r}
+raw_df %>% select(dt,reservoir_lic) %>% arrange(desc(reservoir_lic))
+```
+Do you see `desc()` function inside `arrange`? By default `arrange` sorts a column by first to last or A-Z. `desc` reverses this. 
+
+You can also use multiple sorting criteria and use operations inside `arrange`. Let's arrange by licensed wind production rounded down (`floor`) in 100s range (e.g. 5634 = 5600 and 5693 = 5600 as well). Then we sort by date time to see the first time the production entered a 100-range in the data time period.
+
+```{r}
+raw_df %>% arrange(desc(floor(wind_lic/100)*100),dt)
+```
+
+### `mutate`/`transmute`
+
+Mutate is the function when we do operations and calculations using other columns. 
+
+For instance let's calculate wind power's share in total renewables production at each hour. 
+
+```{r}
+raw_df %>% mutate(wind_lic_perc = wind_lic / (wind_lic + geothermal_lic + biogas_lic + canalType_lic + riverType_lic + biomass_lic + landfillGas_lic + sun_lic + reservoir_lic + others_lic + wind_ul + biogas_ul + canalType_ul + biomass_ul + sun_ul + others_ul)) %>% select(dt, wind_lic_perc)
+```
+
+You can use many R functions (from both base functions and other packages). For instance to calculate "competition" wind and solar we can use the following expression.
+
+```{r}
+raw_df %>% mutate(wind_or_solar = ifelse(wind_lic + wind_ul > sun_lic + sun_ul, "wind", "solar")) %>% select(dt,wind_or_solar)
+```
+Transmute has the same functionality as mutate with the additional property similar to `select`. Transmute returns only the columns included in the function. Suppose we also want to calculate the difference between total wind and total solar.
+
+```{r}
+raw_df %>% transmute(dt, wind_or_solar = ifelse(wind_lic + wind_ul > sun_lic + sun_ul, "wind", "solar"), absdiff = abs(wind_lic + wind_ul - sun_lic - sun_ul))
+```
+
+#### `mutate/transmute` advanced usage
+
+Suppose we want to see the difference between the previous and next hour's production. We offset rows using `lead` and `lag` functions. But remember lead and lag does not actually give you "next/previous hour's" values, just the rows. You may need to arrange your data. 
+
+```{r}
+raw_df %>% transmute(dt, wind_lic, wind_lic_prev_h = lead(wind_lic,1), wind_lic_next_h = lag(wind_lic,1))
+```
+
+If you want to use the same function over several columns, you can use the new `across` function. Let's round every numeric column to one significant digit.
+
+```{r}
+raw_df %>% mutate(across(where(is.numeric),~round(.,1)))
+```
+
+We can also specify columns. Let's see the comparative production of wind and reservoir hydro against the unlicensed solar production. We just increment solar production by 1 to prevent any infinity values.
+
+```{r}
+raw_df %>% mutate(sun_ul = sun_ul + 1) %>% transmute(dt,across(c(wind_lic,reservoir_lic),~round(./sun_ul,2)))
+```
+
+If there are multiple conditions `ifelse` is not enough. It is possible to use `case_when` to specify multiple conditions and outcomes.
+
+```{r}
+raw_df %>% transmute(dt, solar_production_level = case_when(sun_ul > quantile(sun_ul,0.9) ~ "very high", sun_ul > quantile(sun_ul, 0.75) ~ "high", sun_ul > quantile(sun_ul, 0.5) ~ "above median", TRUE ~ "below median"))  %>% slice(7:9)
+```
+
+
+`rowwise` is actually a type of `group_by/summarise` function but as the name suggests it allows us to do row-wise operations. Let's calculate row sums by using `c_across` function and `rowwise`. Oh and also now, experimentally, you can use relocate functionality in `mutate/transmute`. So, conveniently we can place it after date time.
+
+```{r}
+raw_df %>% slice_head(n=5) %>% rowwise() %>% mutate(total_prod = sum(c_across(where(is.numeric))),.after=dt)
+```
+
+### `group_by`/`summarise`
+
+Finally we will learn how to calculate summary tables. It is similar to Pivot Tables in Excel.  `group_by` is the grouping function, `summarise` is the summarising function.
+
+For instance let's calculate number of hours where wind production is above 3000 MWh. We will use a special function `n()` to calculate number of rows. We can define groupings just like `mutate`.
+
+```{r}
+raw_df %>% group_by(production_group = cut(wind_lic + wind_ul,breaks=c(0,1000,2000,3000,4000,5000,6000),include.lowest = TRUE)) %>% summarise(count = n())
+```
+
+
+Normally, we get one result for each group and summary function. From `dplyr 1.0.0` we can have multiple row summarise for each group. Let's say we want to find the minimum and maximum licensed wind production ranges for each year. But, be warned, it can be a little confusing.
+
+```{r}
+raw_df %>% group_by(year = lubridate::year(dt)) %>% summarise(wind_lic_range = range(wind_lic))
+```
+
+#### `group_by`/`summarise` advanced usage
+
+Just like `mutate/transmute` you can use `across` in `summarise` as well. Let's see median production of each year and each source. In this example we can also use the named list version of the functions and additional names structure.
+
+```{r}
+raw_df %>% group_by(year = lubridate::year(dt)) %>% summarise(across(where(is.numeric),list(med=median),.names="{fn}_{col}"))
+```
+
+## Exercises
+
+Solve the following exercises. Outputs are given below, you are expected write code to match the outputs.
+
+1. Find the mean and standard deviation of licensed geothermal productions in all years. (Tip: Use `lubridate::year` to get years from date data.)
+
+```{r,echo=answer_echo}
+raw_df %>% 
+  group_by(year=lubridate::year(dt)) %>%
+  summarise(mean_geo = mean(geothermal_lic), sd_geo = sd(geothermal_lic))
+```
+
+2. Find the hourly average unlicensed solar (sun_ul) production levels for May 2020.
+
+```{r,echo=answer_echo}
+raw_df %>% 
+  filter(lubridate::year(dt) == 2020 & lubridate::month(dt) == 5) %>%
+  group_by(hour = lubridate::hour(dt)) %>%
+  summarise(avg_prod = round(mean(sun_ul),2))
+```
+
+3. Find the average daily percentage change of licensed biomass (biomass_lic) in 2019. (e.g. Suppose daily production is 50 in day 1 and 53 in day 2, then the change should be (53-50)/50 -1 = 0.06) (Tip: Use `lubridate::as_date` to convert date time to date. Use `lag` and `lead` functions to offset values.)
+
+```{r,echo=answer_echo}
+raw_df %>% 
+  group_by(date = lubridate::as_date(dt)) %>%
+  summarise(total_biomass = sum(biomass_lic)) %>%
+  arrange(date) %>%
+  mutate(prev_day = lag(total_biomass,1)) %>%
+  slice(-1) %>%
+  mutate(perc_change = total_biomass/prev_day - 1) %>%
+  summarise(average_change = mean(perc_change))
+```
+
+
+4. Find the yearly total production levels in TWh (Current values are in MWh. 1 GWh is 1000 MWh and 1 TWh is 1000 GWh). (Tip: In order to avoid a lengthy summation you can use `tidyr::pivot_longer` to get a long format.)
+
+```{r,echo=answer_echo}
+raw_df %>% 
+  mutate(year=lubridate::year(dt)) %>%
+  select(-dt) %>%
+  pivot_longer(-year) %>%
+  group_by(year) %>%
+  summarise(total_production = sum(value)/10^6)
+```
+
+## Conclusion
+
+Fundamental `dplyr` functions provide very convenient tools for data analysis. It can also be used to generate the features required for modelling. You can process few million rows of data without breaking a sweat (for larger data sets you can use `data.table`), you can prepare functions instead of manual Excel operations. With R Markdown system, which this tutorial is prepared in, you can create reproducible documents and automatize the reports. You can use `ggplot2` for visualizations, which is also part of the tidyverse package ecosystem.
+
+## Appendix
+
+### Mini lubridate tutorial
+
+In this tutorial we use a small portion of a very powerful package, `lubridate`. You can see the official website [here](https://lubridate.tidyverse.org/).  
+
+Let's take just 3 dates at random from our data set.
+
+```{r}
+set.seed(5)
+lub_df <- 
+raw_df %>% 
+  select(dt) %>%
+  sample_n(3)
+
+print(lub_df)
+```
+
+Since we called lubridate at the beginning of this tutorial we do not need to call by package reference (`lubridate::`) but it is generally good practice.
+
+```{r}
+lub_df %>% 
+  mutate(
+    year = lubridate::year(dt),
+    month = lubridate::month(dt),
+    day = lubridate::day(dt),
+    week_day = lubridate::wday(dt),
+    wday_label = lubridate::wday(dt,label=TRUE),
+    hour = lubridate::hour(dt),
+    minute = lubridate::minute(dt),
+    second = lubridate::second(dt)
+  )
+```
+
+
+
+## References
+
++ Data Set: [EPIAS/EXIST Transparency Platform](https://seffaflik.epias.com.tr/transparency/index.xhtml)
++ Tidyverse: [https://www.tidyverse.org/]()
++ R for Data Science: [https://r4ds.had.co.nz/]()
++ [Cheatsheet (Data Transformation)](https://www.rstudio.com/resources/cheatsheets/) [(Turkish Version)](https://github.com/rstudio/cheatsheets/raw/master/translations/turkish/data-transformation_turkish.pdf)
