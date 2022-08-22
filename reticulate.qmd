@@ -1,0 +1,169 @@
+# Using Python and R Together {.unnumbered}
+
+In the ever-increasing requirements era of data science, Python is one of the fundamental tools that a data scientist should know about. Even though R is quite elegant and enough in many data related applications, a mix of Python might also be required to get the job done. One of the reasons is to benefit from API connections because Python enjoys first class support (e.g. native SDK) in many services. For instance, using `boto3` package for AWS was quite useful (before the [paws R package](https://paws-r.github.io/)).
+
+RStudio especially positions itself as "A Single Home for R and Python Data Science" in [their blog post](https://www.rstudio.com/blog/one-home-for-r-and-python/). It is also the main reason why they created and support the `reticulate` R package. Before `reticulate`, Python integration was still possible but much more difficult in many aspects. It still might have quirks but `reticulate` provides much better integration.
+
+In this tutorial, we are going to do simple examples using `reticulate` package. This tutorial is not exhaustive. For better coverage, check the [official package page](https://rstudio.github.io/reticulate/). 
+
+## Initialization
+
+It always starts with the loading of the package.
+
+```{r}
+library(reticulate)
+```
+
+Python has multiple versions (thankfully they phased out Python 2 but still a pain in many operating systems) You can learn the current python version PATH using `Sys.which` function. Output will differ in different systems and installations.
+
+```{r}
+Sys.which("python")
+```
+
+For better detail, `py_config` is a good function. Output will differ in different systems and installations.
+
+```{r}
+py_config()
+```
+
+For available configurations `py_discover_config` can be used.
+
+```{r, eval=FALSE}
+py_discover_config()
+```
+
+`reticulate` can use other python installations, virtual environments and conda versions. Although it is a great convenience, intricacies and delicateness of Python versions might still hurt your workflows.
+
+```{r,eval=FALSE}
+use_python() ## python path
+use_virtualenv() ## virtual environment name
+use_condaenv() ## conda environment
+```
+
+
+## Methods and Examples
+
+In this section we will see some methodologies to use with `reticulate`.
+
+### Call Python functions R style
+
+This is the fundamental and (in my opinion) worst way to benefit from Python in R. Because translation of style is imperfect and might not work in every case.
+
+Here is an example with pandas. 
+
+```{r}
+## similar to import pandas as pd
+pd <- import("pandas") 
+## create a simple dataframe 
+df_pandas <- pd$DataFrame(data=list(col1=c(2,1,3),col2=c("a","b","c"))) 
+
+df_pandas
+```
+
+Let's try a simple example. 
+
+```{r}
+os <- import("os")
+os$path$join("a","b","c")
+```
+
+Caveats: Some functions working on console might not work on RMarkdown
+
+```{r}
+try(df_pandas$sort_values("col1"))
+```
+
+```{r}
+## filter using query fails both on console and rmarkdown
+try(df_pandas$query('col1 > 1.0'))
+```
+
+### Call Python in RMarkdown chunk
+
+The format is similar to an R chunk but instead of `r` write `python`.
+
+```{r,echo=FALSE}
+output_code <-
+"```{python}
+#your python code here
+```\n"
+
+cat(output_code)
+
+```
+
+Here is an example
+
+```{python}
+import os
+os.path.join("a","b","c")
+```
+
+Our pandas examples also works in this case.
+
+```{python}
+import pandas as pd
+
+pandas_df_py = pd.DataFrame(data={'col1':[2,1,3],'col2':['a','b','c']}) 
+
+pandas_df_py
+```
+
+```{python}
+pandas_df_py.sort_values('col1')
+```
+
+```{python}
+## filter using query fails both on console and rmarkdown
+pandas_df_py.query('col1 > 1.0')
+```
+
+### Source Python Script
+
+Personally, the most convenient way to use Python code is to source a `.py` file. Even though interoperability is a great idea, keeping Python and R codes as separate as possible will save you from a lot of headache in the future (at least with the current implementation).
+
+We can source any python file using `source_python()` function easily. Let's name our python file `triangle.py` and write the following.
+
+```{python}
+def area_of_triangle(h,x):
+  return h*x/2
+```
+
+```{python}
+area_of_triangle(3,5)
+```
+
+Follow 
+
+```{r,eval=FALSE}
+reticulate::source_python("triangle.py") ### Remember to provide proper relative or absolute path.
+```
+
+Note: For RMarkdown demonstration purposes below we;
+
++ created a temporary file
++ wrote our python function to that file using `cat`
++ then executed `source_python`
++ then called the function as R function
+
+```{r}
+pyfile <- tempfile(fileext=".py")
+cat('def area_of_triangle(h,x):
+  return h*x/2',file=pyfile)
+source_python(pyfile)
+
+area_of_triangle(3,5)
+```
+
+But deep down it is a Python function.
+
+```{r}
+print(area_of_triangle)
+```
+
+### Conclusion
+
+To be honest Python versioning is a mess. Lots of parallel versions (even python2 version issues are still looming) and conflicts in different layers of computing might be troublesome especially in Docker settings. Therefore it is highly recommended to add Python code to your R code if it is totally necessary.
+
+Though it is always a good thing to have an exquisite tool if you need to use Python and cannot separate processes. `reticulate` is currently that tool.
+

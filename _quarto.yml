@@ -3,14 +3,20 @@ project:
   output-dir: docs
 
 book:
-  title: "Book of Exploratory Data Analysis"
+  title: "Book of Exploratory Data Analysis (EDA)"
   author: "Berk Orbay"
   date: "August 2022"
   chapters:
     - index.qmd
-    - intro.qmd
-    - dplyr.qmd
-    - summary.qmd
+    - part: basics.qmd
+      chapters:
+        - intro.qmd
+        - dplyr.qmd
+        - ggplot2.qmd
+        - summary.qmd
+    - part: advanced.qmd
+      chapters:
+        - reticulate.qmd
     - references.qmd
 
 bibliography: references.bib

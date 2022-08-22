@@ -9,7 +9,7 @@
 <meta name="author" content="Berk Orbay">
 <meta name="dcterms.date" content="2020-06-01">
 
-<title>Book of Exploratory Data Analysis - 2&nbsp; dplyr</title>
+<title>Book of Exploratory Data Analysis (EDA) - 2&nbsp; dplyr</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -90,7 +90,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./summary.html" rel="next">
+<link href="./ggplot2.html" rel="next">
 <link href="./intro.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -143,7 +143,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">Book of Exploratory Data Analysis</a> 
+      <a href="./">Book of Exploratory Data Analysis (EDA)</a> 
     </div>
       </div>
       <div class="mt-2 flex-shrink-0 align-items-center">
@@ -158,21 +158,51 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <a href="./index.html" class="sidebar-item-text sidebar-link">Welcome</a>
   </div>
 </li>
-        <li class="sidebar-item">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./basics.html" class="sidebar-item-text sidebar-link">Basics</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./intro.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./dplyr.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">dplyr</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./summary.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Summary</span></a>
+  <a href="./ggplot2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">ggplot2</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./summary.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Summary</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./advanced.html" class="sidebar-item-text sidebar-link">Advanced</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./reticulate.html" class="sidebar-item-text sidebar-link">Using Python and R Together</a>
+  </div>
+</li>
+      </ul>
+  </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./references.html" class="sidebar-item-text sidebar-link">References</a>
@@ -584,9 +614,9 @@ $ others_ul       &lt;dbl&gt; 0.0610, 0.0395, 0.4136, 0.5508, 0.7106, 1.3775, 2.
 <pre><code># A tibble: 5 × 17
   dt                  wind_lic geothermal_lic biogas_lic canalType_lic
   &lt;dttm&gt;                 &lt;dbl&gt;          &lt;dbl&gt;      &lt;dbl&gt;         &lt;dbl&gt;
-1 2019-07-27 11:00:00    1891.           697.       82.9         1254.
-2 2019-06-16 07:00:00    1834.           827.       76.2         2126.
-3 2019-11-17 18:00:00     762.           802.       80.8          652.
+1 2019-08-15 13:00:00    2163.           669.       77.6          840.
+2 2018-07-24 13:00:00    1399.           550.       60.8          954.
+3 2018-05-01 08:00:00    1119.           702.       65.2         2004.
 # … with 2 more rows, and 12 more variables: riverType_lic &lt;dbl&gt;,
 #   biomass_lic &lt;dbl&gt;, landfillGas_lic &lt;dbl&gt;, sun_lic &lt;dbl&gt;,
 #   reservoir_lic &lt;dbl&gt;, others_lic &lt;dbl&gt;, wind_ul &lt;dbl&gt;, biogas_ul &lt;dbl&gt;,
@@ -600,9 +630,9 @@ $ others_ul       &lt;dbl&gt; 0.0610, 0.0395, 0.4136, 0.5508, 0.7106, 1.3775, 2.
 <pre><code># A tibble: 21 × 17
   dt                  wind_lic geothermal_lic biogas_lic canalType_lic
   &lt;dttm&gt;                 &lt;dbl&gt;          &lt;dbl&gt;      &lt;dbl&gt;         &lt;dbl&gt;
-1 2019-06-13 06:00:00    1567.           838.       74.0         2309.
-2 2019-07-22 23:00:00    4420.           719.       81.9         1480.
-3 2019-04-12 18:00:00    2337.           814.       84.5         4113.
+1 2018-07-26 15:00:00    1346.           555.       61.3          956.
+2 2020-05-24 20:00:00    2550.           876.       75.7         3080.
+3 2019-04-15 20:00:00    2503.           837.       83.1         4406.
 # … with 18 more rows, and 12 more variables: riverType_lic &lt;dbl&gt;,
 #   biomass_lic &lt;dbl&gt;, landfillGas_lic &lt;dbl&gt;, sun_lic &lt;dbl&gt;,
 #   reservoir_lic &lt;dbl&gt;, others_lic &lt;dbl&gt;, wind_ul &lt;dbl&gt;, biogas_ul &lt;dbl&gt;,
@@ -1042,8 +1072,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./summary.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Summary</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./ggplot2.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">ggplot2</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
