@@ -8,12 +8,14 @@ book:
   date: "August 2022"
   chapters:
     - index.qmd
-    - part: basics.qmd
+    - part: fundamentals.qmd
       chapters:
-        - intro.qmd
+        - base-r.qmd
         - dplyr.qmd
         - ggplot2.qmd
-        - summary.qmd
+        - quarto.qmd
+        - shiny.qmd
+        - fundamentals-end.qmd
     - part: advanced.qmd
       chapters:
         - reticulate.qmd

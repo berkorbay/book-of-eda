@@ -1,0 +1,16 @@
+# Quarto
+
+Quarto is the most recent solution released by RStudio/Posit. It is very similar to RMarkdown but it has two major advantages. First advantage is Quarto is multilingual (currently R, Python, Julia and Observable). Second advantage is while RMarkdown inspired other packages such as `pagedown` for webpages, `bookdown` for books, `pkgdown` for packages, `blogdown` for blogs and `xaringan` for presentations Quarto provides those capabilities (mostly) and more under a single umbrella.
+
+According to official announcement Quarto will not replace RMarkdown but it will not go in the same direction either. For more details you can read Yihui Xie's (author of RMarkdown) [blog post](https://yihui.org/en/2022/04/quarto-r-markdown/).
+
+You can start with the official page's [Get Started](https://quarto.org/docs/get-started/) and then [Quarto Guide](https://quarto.org/docs/guide/). You can also use [Quarto Pub](https://quartopub.com/) to publish your Quarto documents.
+
+Also see Thomas Mock's [Quarto Webinar](https://www.youtube.com/watch?v=yvi5uXQMvu4) (beware! 2hrs) and [its materials](https://jthomasmock.github.io/quarto-2hr-webinar/).
+
+## Resources
+
++ [A Quarto tip a day](https://mine-cetinkaya-rundel.github.io/quarto-tip-a-day/)
++ [Quarto Gallery](https://quarto.org/docs/gallery/)
++ [Awesome Quarto](https://github.com/mcanouil/awesome-quarto)
++ [#quartopub hashtag on Twitter](https://twitter.com/hashtag/QuartoPub)

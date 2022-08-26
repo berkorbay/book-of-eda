@@ -1,0 +1,17 @@
+# Fundamentals
+
+This chapter covers the fundamental topics of Exploratory Data Analysis. These are
+
+- Data Manipulation: Taking raw data and creating analyses.
+- Data Visualization: Visualizing findings from the data.
+- Reporting: Combining all the findings into a single cohesive report.
+- Interactive Reporting (Dashboards): Self-exploring analyses and outcomes.
+
+To achieve these skills following fundamental R packages are used.
+
+- `dplyr` for data manipulation
+- `ggplot2` for data visualization
+- `quarto` for reporting (alternatively use `rmarkdown`)
+- `shiny` for interactive dashboarding
+
+Following sections provide guidance and examples on these packages in the context of Exploratory Data Analysis. There are many extensions and further packages to consider. However, in order for Fundamentals chapter to stay "fundamental" these topics are moved to Advanced chapter.
