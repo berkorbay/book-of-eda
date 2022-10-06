@@ -3,3 +3,5 @@
 This "book", Book of Exploratory Data Analysis (EDA), is actually the organized lecture notes of the course MEF BDA 503. 
 
 Materials will progressively emerge...
+
+Latest update in 2022-10-06
