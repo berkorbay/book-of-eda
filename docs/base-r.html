@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Book of Exploratory Data Analysis (EDA) - 2&nbsp; Base R</title>
+<title>Book of Exploratory Data Analysis (EDA) - 1&nbsp; Base R</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -88,8 +88,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./dplyr.html" rel="next">
-<link href="./intro.html" rel="prev">
+<link href="./base-r-in-detail.html" rel="next">
+<link href="./fundamentals.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -129,7 +129,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Base R</span></h1>
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Base R</span></h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -159,7 +159,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a href="./basics.html" class="sidebar-item-text sidebar-link">Basics</a>
+            <a href="./fundamentals.html" class="sidebar-item-text sidebar-link">Fundamentals</a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -167,12 +167,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./intro.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></a>
+  <a href="./base-r.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Base R</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./base-r.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Base R</span></a>
+  <a href="./base-r-in-detail.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Base R in Detail</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -187,7 +187,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./summary.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Summary</span></a>
+  <a href="./quarto.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Quarto</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./shiny.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">shiny</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./fundamentals-end.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Chapter End</span></a>
   </div>
 </li>
       </ul>
@@ -207,11 +217,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
       </ul>
   </li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./references.html" class="sidebar-item-text sidebar-link">References</a>
-  </div>
-</li>
     </ul>
     </div>
 </nav>
@@ -221,29 +226,30 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#brief-history-of-r" id="toc-brief-history-of-r" class="nav-link active" data-scroll-target="#brief-history-of-r"> <span class="header-section-number">2.1</span> Brief History of R</a>
+  <li><a href="#brief-history-of-r" id="toc-brief-history-of-r" class="nav-link active" data-scroll-target="#brief-history-of-r"> <span class="header-section-number">1.1</span> Brief History of R</a>
   <ul class="collapse">
-  <li><a href="#sources" id="toc-sources" class="nav-link" data-scroll-target="#sources"> <span class="header-section-number">2.1.1</span> Sources</a></li>
+  <li><a href="#sources" id="toc-sources" class="nav-link" data-scroll-target="#sources"> <span class="header-section-number">1.1.1</span> Sources</a></li>
   </ul></li>
-  <li><a href="#what-is-there-to-like-r" id="toc-what-is-there-to-like-r" class="nav-link" data-scroll-target="#what-is-there-to-like-r"> <span class="header-section-number">2.2</span> What is there to like R?</a></li>
-  <li><a href="#what-are-the-disadvantages-of-r" id="toc-what-are-the-disadvantages-of-r" class="nav-link" data-scroll-target="#what-are-the-disadvantages-of-r"> <span class="header-section-number">2.3</span> What are the disadvantages of R?</a></li>
-  <li><a href="#basic-features" id="toc-basic-features" class="nav-link" data-scroll-target="#basic-features"> <span class="header-section-number">2.4</span> Basic Features</a></li>
-  <li><a href="#data-types" id="toc-data-types" class="nav-link" data-scroll-target="#data-types"> <span class="header-section-number">2.5</span> Data Types</a></li>
-  <li><a href="#object-types" id="toc-object-types" class="nav-link" data-scroll-target="#object-types"> <span class="header-section-number">2.6</span> Object Types</a>
+  <li><a href="#what-is-there-to-like-r" id="toc-what-is-there-to-like-r" class="nav-link" data-scroll-target="#what-is-there-to-like-r"> <span class="header-section-number">1.2</span> What is there to like R?</a></li>
+  <li><a href="#what-are-the-disadvantages-of-r" id="toc-what-are-the-disadvantages-of-r" class="nav-link" data-scroll-target="#what-are-the-disadvantages-of-r"> <span class="header-section-number">1.3</span> What are the disadvantages of R?</a></li>
+  <li><a href="#basic-features" id="toc-basic-features" class="nav-link" data-scroll-target="#basic-features"> <span class="header-section-number">1.4</span> Basic Features</a></li>
+  <li><a href="#data-types" id="toc-data-types" class="nav-link" data-scroll-target="#data-types"> <span class="header-section-number">1.5</span> Data Types</a></li>
+  <li><a href="#object-types" id="toc-object-types" class="nav-link" data-scroll-target="#object-types"> <span class="header-section-number">1.6</span> Object Types</a>
   <ul class="collapse">
-  <li><a href="#vector" id="toc-vector" class="nav-link" data-scroll-target="#vector"> <span class="header-section-number">2.6.1</span> Vector</a></li>
-  <li><a href="#matrix" id="toc-matrix" class="nav-link" data-scroll-target="#matrix"> <span class="header-section-number">2.6.2</span> Matrix</a></li>
-  <li><a href="#data-frame" id="toc-data-frame" class="nav-link" data-scroll-target="#data-frame"> <span class="header-section-number">2.6.3</span> Data Frame</a></li>
-  <li><a href="#list" id="toc-list" class="nav-link" data-scroll-target="#list"> <span class="header-section-number">2.6.4</span> List</a></li>
-  <li><a href="#functions" id="toc-functions" class="nav-link" data-scroll-target="#functions"> <span class="header-section-number">2.6.5</span> Functions</a></li>
+  <li><a href="#vector" id="toc-vector" class="nav-link" data-scroll-target="#vector"> <span class="header-section-number">1.6.1</span> Vector</a></li>
+  <li><a href="#matrix" id="toc-matrix" class="nav-link" data-scroll-target="#matrix"> <span class="header-section-number">1.6.2</span> Matrix</a></li>
+  <li><a href="#data-frame" id="toc-data-frame" class="nav-link" data-scroll-target="#data-frame"> <span class="header-section-number">1.6.3</span> Data Frame</a></li>
+  <li><a href="#list" id="toc-list" class="nav-link" data-scroll-target="#list"> <span class="header-section-number">1.6.4</span> List</a></li>
+  <li><a href="#functions" id="toc-functions" class="nav-link" data-scroll-target="#functions"> <span class="header-section-number">1.6.5</span> Functions</a></li>
   </ul></li>
-  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"> <span class="header-section-number">2.7</span> Exercises</a>
+  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"> <span class="header-section-number">1.7</span> Exercises</a>
   <ul class="collapse">
-  <li><a href="#temperature-conversion" id="toc-temperature-conversion" class="nav-link" data-scroll-target="#temperature-conversion"> <span class="header-section-number">2.7.1</span> Temperature Conversion</a></li>
-  <li><a href="#color-hex-code" id="toc-color-hex-code" class="nav-link" data-scroll-target="#color-hex-code"> <span class="header-section-number">2.7.2</span> Color Hex Code</a></li>
-  <li><a href="#calculate-probability-of-dice" id="toc-calculate-probability-of-dice" class="nav-link" data-scroll-target="#calculate-probability-of-dice"> <span class="header-section-number">2.7.3</span> Calculate Probability of Dice</a></li>
-  <li><a href="#rock-scissors-paper" id="toc-rock-scissors-paper" class="nav-link" data-scroll-target="#rock-scissors-paper"> <span class="header-section-number">2.7.4</span> Rock, Scissors, Paper</a></li>
+  <li><a href="#temperature-conversion" id="toc-temperature-conversion" class="nav-link" data-scroll-target="#temperature-conversion"> <span class="header-section-number">1.7.1</span> Temperature Conversion</a></li>
+  <li><a href="#color-hex-code" id="toc-color-hex-code" class="nav-link" data-scroll-target="#color-hex-code"> <span class="header-section-number">1.7.2</span> Color Hex Code</a></li>
+  <li><a href="#calculate-probability-of-dice" id="toc-calculate-probability-of-dice" class="nav-link" data-scroll-target="#calculate-probability-of-dice"> <span class="header-section-number">1.7.3</span> Calculate Probability of Dice</a></li>
+  <li><a href="#rock-scissors-paper" id="toc-rock-scissors-paper" class="nav-link" data-scroll-target="#rock-scissors-paper"> <span class="header-section-number">1.7.4</span> Rock, Scissors, Paper</a></li>
   </ul></li>
+  <li><a href="#other-links" id="toc-other-links" class="nav-link" data-scroll-target="#other-links"> <span class="header-section-number">1.8</span> Other Links</a></li>
   </ul>
 </nav>
     </div>
@@ -252,7 +258,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Base R</span></h1>
+<h1 class="title d-none d-lg-block"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Base R</span></h1>
 </div>
 
 
@@ -266,16 +272,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 </header>
 
-<section id="brief-history-of-r" class="level2" data-number="2.1">
-<h2 data-number="2.1" class="anchored" data-anchor-id="brief-history-of-r"><span class="header-section-number">2.1</span> Brief History of R</h2>
+<section id="brief-history-of-r" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="brief-history-of-r"><span class="header-section-number">1.1</span> Brief History of R</h2>
 <ul>
 <li><p>Created by Ross Ithaka and Robert Gentlemen of University of Auckland in 1993. It was derived from commercial <strong>S</strong> programming language (no kidding) which was created in 1976.</p></li>
 <li><p>Version 1.0.0 is released in 2000. Current version is 4.1.1.</p></li>
 <li><p>In 2017, CRAN (official package manager) had more than 10,000 packages. Today it has 18,214 packages on CRAN.</p></li>
 <li><p>Ranked as the 9th most popular language in TIOBE index as of September 2021.</p></li>
 </ul>
-<section id="sources" class="level3" data-number="2.1.1">
-<h3 data-number="2.1.1" class="anchored" data-anchor-id="sources"><span class="header-section-number">2.1.1</span> Sources</h3>
+<section id="sources" class="level3" data-number="1.1.1">
+<h3 data-number="1.1.1" class="anchored" data-anchor-id="sources"><span class="header-section-number">1.1.1</span> Sources</h3>
 <ul>
 <li><a href="https://blog.revolutionanalytics.com/2020/07/the-history-of-r-updated-for-2020.html" class="uri">https://blog.revolutionanalytics.com/2020/07/the-history-of-r-updated-for-2020.html</a></li>
 <li><a href="https://en.wikipedia.org/wiki/R_(programming_language)" class="uri">https://en.wikipedia.org/wiki/R_(programming_language)</a></li>
@@ -285,8 +291,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul>
 </section>
 </section>
-<section id="what-is-there-to-like-r" class="level2" data-number="2.2">
-<h2 data-number="2.2" class="anchored" data-anchor-id="what-is-there-to-like-r"><span class="header-section-number">2.2</span> What is there to like R?</h2>
+<section id="what-is-there-to-like-r" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="what-is-there-to-like-r"><span class="header-section-number">1.2</span> What is there to like R?</h2>
 <p><em>(Personal opinions)</em></p>
 <ul>
 <li><p>One of the two most powerful scripting languages in data analysis with Python. (<a href="https://julialang.org/">Julia</a>, first released in 2012, is an emerging third.)</p></li>
@@ -298,8 +304,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul>
 <p><strong>Note:</strong> Python and R are not competitors. In many cases they complement each other. It is highly recommended to learn both.</p>
 </section>
-<section id="what-are-the-disadvantages-of-r" class="level2" data-number="2.3">
-<h2 data-number="2.3" class="anchored" data-anchor-id="what-are-the-disadvantages-of-r"><span class="header-section-number">2.3</span> What are the disadvantages of R?</h2>
+<section id="what-are-the-disadvantages-of-r" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="what-are-the-disadvantages-of-r"><span class="header-section-number">1.3</span> What are the disadvantages of R?</h2>
 <ul>
 <li><p>Not quite popular as Python in CS community. Support is lagging behind in some areas (especially in cloud computing) compared to Python.</p></li>
 <li><p>Despite a very convenient web framework (shiny), not greatly suited for scalable web applications without heavy modifications. (Still a great start)</p></li>
@@ -309,8 +315,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Each disadvantage can be alleviated using a package or a solution. Its benefits far outweigh its disadvantages.</p>
 <p>class: inverse, center, middle</p>
 </section>
-<section id="basic-features" class="level2" data-number="2.4">
-<h2 data-number="2.4" class="anchored" data-anchor-id="basic-features"><span class="header-section-number">2.4</span> Basic Features</h2>
+<section id="basic-features" class="level2" data-number="1.4">
+<h2 data-number="1.4" class="anchored" data-anchor-id="basic-features"><span class="header-section-number">1.4</span> Basic Features</h2>
 <ul>
 <li><p>R is a vector based language. When you call a function or do an operation, it is usually done for every member of the vector. (It is a powerful feature which requires some time to learn.)</p></li>
 <li><p>Main data types are <code>numeric</code>, <code>character</code> and <code>logical</code>. But <code>factor</code>, <code>integer</code>, <code>date</code>, <code>dttm</code> (date-time) and some other types are also very common.</p></li>
@@ -328,8 +334,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>R console is completely interactive. You can run anything line by line.</li>
 </ul>
 </section>
-<section id="data-types" class="level2" data-number="2.5">
-<h2 data-number="2.5" class="anchored" data-anchor-id="data-types"><span class="header-section-number">2.5</span> Data Types</h2>
+<section id="data-types" class="level2" data-number="1.5">
+<h2 data-number="1.5" class="anchored" data-anchor-id="data-types"><span class="header-section-number">1.5</span> Data Types</h2>
 <ul>
 <li><p>Numeric (<code>double</code>): 1.33, 5422.22…</p>
 <ul>
@@ -347,10 +353,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 </ul>
 </section>
-<section id="object-types" class="level2" data-number="2.6">
-<h2 data-number="2.6" class="anchored" data-anchor-id="object-types"><span class="header-section-number">2.6</span> Object Types</h2>
-<section id="vector" class="level3" data-number="2.6.1">
-<h3 data-number="2.6.1" class="anchored" data-anchor-id="vector"><span class="header-section-number">2.6.1</span> Vector</h3>
+<section id="object-types" class="level2" data-number="1.6">
+<h2 data-number="1.6" class="anchored" data-anchor-id="object-types"><span class="header-section-number">1.6</span> Object Types</h2>
+<section id="vector" class="level3" data-number="1.6.1">
+<h3 data-number="1.6.1" class="anchored" data-anchor-id="vector"><span class="header-section-number">1.6.1</span> Vector</h3>
 <p>Vector is the foundation stone of R object types. A variable with a single value is called “atomic” vector.</p>
 <p>Vectors with multiple values can be defined using <code>c()</code> (“combine”) function.</p>
 <div class="cell">
@@ -369,8 +375,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 </section>
-<section id="matrix" class="level3" data-number="2.6.2">
-<h3 data-number="2.6.2" class="anchored" data-anchor-id="matrix"><span class="header-section-number">2.6.2</span> Matrix</h3>
+<section id="matrix" class="level3" data-number="1.6.2">
+<h3 data-number="1.6.2" class="anchored" data-anchor-id="matrix"><span class="header-section-number">1.6.2</span> Matrix</h3>
 <p>Matrix is simply a two dimensional special vector.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>mat1<span class="ot">&lt;-</span><span class="fu">matrix</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>, <span class="at">ncol=</span><span class="dv">3</span>, <span class="at">nrow=</span><span class="dv">3</span>)</span>
@@ -394,8 +400,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 </section>
-<section id="data-frame" class="level3" data-number="2.6.3">
-<h3 data-number="2.6.3" class="anchored" data-anchor-id="data-frame"><span class="header-section-number">2.6.3</span> Data Frame</h3>
+<section id="data-frame" class="level3" data-number="1.6.3">
+<h3 data-number="1.6.3" class="anchored" data-anchor-id="data-frame"><span class="header-section-number">1.6.3</span> Data Frame</h3>
 <p>Data frame object type is still two dimensional but each column can be of a different data type.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>df1 <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">some_numbers=</span><span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>,</span>
@@ -412,8 +418,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Data frames are extremely powerful structures. Most of our work will be on data frames.</p>
 <p><strong>Note:</strong> In <code>dplyr</code> package we will see a special version of data frames: <code>tibble</code>.</p>
 </section>
-<section id="list" class="level3" data-number="2.6.4">
-<h3 data-number="2.6.4" class="anchored" data-anchor-id="list"><span class="header-section-number">2.6.4</span> List</h3>
+<section id="list" class="level3" data-number="1.6.4">
+<h3 data-number="1.6.4" class="anchored" data-anchor-id="list"><span class="header-section-number">1.6.4</span> List</h3>
 <p>Lists are like vectors but they can hold any object (including lists). You can also add names to lists.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>list1 <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">data_frame =</span> df1,<span class="at">matrix =</span> mat1,<span class="at">vector=</span> x)</span>
@@ -436,8 +442,8 @@ $vector
 </div>
 </div>
 </section>
-<section id="functions" class="level3" data-number="2.6.5">
-<h3 data-number="2.6.5" class="anchored" data-anchor-id="functions"><span class="header-section-number">2.6.5</span> Functions</h3>
+<section id="functions" class="level3" data-number="1.6.5">
+<h3 data-number="1.6.5" class="anchored" data-anchor-id="functions"><span class="header-section-number">1.6.5</span> Functions</h3>
 <p>Functions are very useful types as they allow to run reusable code with dynamic inputs. For example, let’s write a function to calculate the area of a triangle.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>area_of_triangle <span class="ot">&lt;-</span> <span class="cf">function</span>(height,base_length){</span>
@@ -459,11 +465,11 @@ $vector
 <p>class: center, middle, inverse</p>
 </section>
 </section>
-<section id="exercises" class="level2" data-number="2.7">
-<h2 data-number="2.7" class="anchored" data-anchor-id="exercises"><span class="header-section-number">2.7</span> Exercises</h2>
+<section id="exercises" class="level2" data-number="1.7">
+<h2 data-number="1.7" class="anchored" data-anchor-id="exercises"><span class="header-section-number">1.7</span> Exercises</h2>
 <p>Complete base R document before attempting to solve these.</p>
-<section id="temperature-conversion" class="level3" data-number="2.7.1">
-<h3 data-number="2.7.1" class="anchored" data-anchor-id="temperature-conversion"><span class="header-section-number">2.7.1</span> Temperature Conversion</h3>
+<section id="temperature-conversion" class="level3" data-number="1.7.1">
+<h3 data-number="1.7.1" class="anchored" data-anchor-id="temperature-conversion"><span class="header-section-number">1.7.1</span> Temperature Conversion</h3>
 <p>Write a function to convert Fahrenheit to Celsius and Celsius to Fahrenheit.</p>
 <p>(X°C × 9/5) + 32 = Y°F</p>
 <div class="cell">
@@ -485,8 +491,8 @@ $vector
 <pre><code>[1] 30</code></pre>
 </div>
 </div>
-<section id="future-value" class="level4" data-number="2.7.1.1">
-<h4 data-number="2.7.1.1" class="anchored" data-anchor-id="future-value"><span class="header-section-number">2.7.1.1</span> Future Value</h4>
+<section id="future-value" class="level4" data-number="1.7.1.1">
+<h4 data-number="1.7.1.1" class="anchored" data-anchor-id="future-value"><span class="header-section-number">1.7.1.1</span> Future Value</h4>
 <p>Write a function to calculate the future value of an investment given annually compounding interest over an amount of years.</p>
 <p><span class="math display">\[FV = X * (1 + i) ^T\]</span></p>
 <div class="cell">
@@ -505,8 +511,8 @@ $vector
 </div>
 </section>
 </section>
-<section id="color-hex-code" class="level3" data-number="2.7.2">
-<h3 data-number="2.7.2" class="anchored" data-anchor-id="color-hex-code"><span class="header-section-number">2.7.2</span> Color Hex Code</h3>
+<section id="color-hex-code" class="level3" data-number="1.7.2">
+<h3 data-number="1.7.2" class="anchored" data-anchor-id="color-hex-code"><span class="header-section-number">1.7.2</span> Color Hex Code</h3>
 <p>Write a function to randomly generate n <a href="https://www.color-hex.com/">color hex codes</a>. You can use <code>letters</code> predefined vector.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>generate_hex_code <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">n=</span><span class="dv">1</span>){</span>
@@ -523,12 +529,12 @@ $vector
 <div class="cell">
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">generate_hex_code</span>(<span class="at">n=</span><span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "#629a04" "#6fbfe7" "#26b59f"</code></pre>
+<pre><code>[1] "#8c4e65" "#d0ed34" "#b756a6"</code></pre>
 </div>
 </div>
 </section>
-<section id="calculate-probability-of-dice" class="level3" data-number="2.7.3">
-<h3 data-number="2.7.3" class="anchored" data-anchor-id="calculate-probability-of-dice"><span class="header-section-number">2.7.3</span> Calculate Probability of Dice</h3>
+<section id="calculate-probability-of-dice" class="level3" data-number="1.7.3">
+<h3 data-number="1.7.3" class="anchored" data-anchor-id="calculate-probability-of-dice"><span class="header-section-number">1.7.3</span> Calculate Probability of Dice</h3>
 <p>Write a function which calculates the probability of getting <strong>k</strong> sixes in <strong>n</strong> throws of a die. Hint: Use binomial distribution.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>get_prob_dice <span class="ot">&lt;-</span> <span class="cf">function</span>(k,n){</span>
@@ -550,8 +556,8 @@ $vector
 </div>
 </div>
 </section>
-<section id="rock-scissors-paper" class="level3" data-number="2.7.4">
-<h3 data-number="2.7.4" class="anchored" data-anchor-id="rock-scissors-paper"><span class="header-section-number">2.7.4</span> Rock, Scissors, Paper</h3>
+<section id="rock-scissors-paper" class="level3" data-number="1.7.4">
+<h3 data-number="1.7.4" class="anchored" data-anchor-id="rock-scissors-paper"><span class="header-section-number">1.7.4</span> Rock, Scissors, Paper</h3>
 <p>Write a rock scissors paper game which computer randomly chooses</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>rsp_game <span class="ot">&lt;-</span> <span class="cf">function</span>(user,<span class="at">choices=</span><span class="fu">c</span>(<span class="st">"rock"</span>,<span class="st">"scissors"</span>,<span class="st">"paper"</span>)){</span>
@@ -572,13 +578,19 @@ $vector
 <div class="cell">
 <div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rsp_game</span>(<span class="st">"rock"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "I chose paper. You lose!"</code></pre>
+<pre><code>[1] "I chose scissors. You win!"</code></pre>
 </div>
 </div>
 <p>Check course webpage for more exercises!</p>
-
-
 </section>
+</section>
+<section id="other-links" class="level2" data-number="1.8">
+<h2 data-number="1.8" class="anchored" data-anchor-id="other-links"><span class="header-section-number">1.8</span> Other Links</h2>
+<ul>
+<li><a href="http://github.com/rstudio/cheatsheets/blob/main/base-r.pdf">Base R Cheat Sheet</a></li>
+</ul>
+
+
 </section>
 
 </main> <!-- /main -->
@@ -681,13 +693,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./intro.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span>
+      <a href="./fundamentals.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Fundamentals</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./dplyr.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">dplyr</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./base-r-in-detail.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Base R in Detail</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

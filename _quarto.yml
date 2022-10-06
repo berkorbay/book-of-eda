@@ -11,6 +11,7 @@ book:
     - part: fundamentals.qmd
       chapters:
         - base-r.qmd
+        - base-r-in-detail.qmd
         - dplyr.qmd
         - ggplot2.qmd
         - quarto.qmd
@@ -19,7 +20,6 @@ book:
     - part: advanced.qmd
       chapters:
         - reticulate.qmd
-    - references.qmd
 
 bibliography: references.bib
 

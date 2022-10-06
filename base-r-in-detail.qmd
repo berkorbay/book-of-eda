@@ -1,0 +1,658 @@
+# Base R in Detail
+
+```{r, setup, include=FALSE}
+exercise_echo <- TRUE
+```
+
+_This document is more step by step. It was created in 2018, therefore there is no information about Base R pipes ("|>")._
+
+# Briefly About R
+
+R is a scripting language^[Read as not compiled like C or C++. Line by line, you can run the code.] with the main purpose of conducting tasks related to statistics, mainly by academics for the academics. Though, these days things got slightly out of hand and R became one of the most popular languages especially in the field of "data science". The biggest advantage of R is the huge package (R equivalent of "There is an app for that") and developer support.
+
+Other main points to know about R are as follows.
+
+ + R is mainly based on vector operations.^[Currently, take it as a warning of "Do not use unnecessary loops (i.e. `for`) in your code."]
+ + R inherently does not support parallel processing. (There are solutions but still frustrating.)
+ + R does all the computations in the memory. A bit problematic for bigger data (>10M rows) applications, but there are solutions as well.
+ + Even though R packages have magnificent reporting tools (e.g. This document is prepared using R Markdown.), it is not suitable for all purpose use such as Python (especially web development).
+ + Package management is mainly done by CRAN repository. Though, these days there are many packages in other sources as well For instance, putting R packages on GitHub before CRAN for testing is quite popular.
+ + There is a Microsoft version of R with additional abilities (It supports Mac and Linux, too).
+
+A list of resources with links and explanations will be given at the end of this document.
+
+# Getting Ready
+
+ + Download R from this link https://cran.r-project.org/ (latest release is 3.3.1 as of Oct 6, 2016) and install. Make sure it is working.
+ + Recommended to choose an editor (see R 101 below for alternatives).
+
+# R 101
+
+This part lays out the very basics of R. Content is mainly about data types (numeric, character and logical), object types (vectors, matrices, lists and ) and basic operations. Before starting check the following tips that can be useful.
+
+ + Commenting the code is done with `#` for each line. There is no block comment like `/* */` used in C, but there are block commment keyboard shortcuts for most editors.
+ + If you need information about any object just put `?` before the object. For example, try `?mean` to get information about the function `mean`.
+ + You will need a good code editor or an IDE (Integrated Development Environment). Most popular choice of an IDE for R is [RStudio](https://www.rstudio.com/) (Remember to install R first). Recommended alternatives are [Atom](http://atom.io/) and [Sublime Text](https://www.sublimetext.com/) with proper add-ons.
+
+##Value Assignment, Vectors and Data Types
+
+Values can be defined on variables with the assignment operator `<-` or `=`.^[You can use either or both; there is only a small difference between those two.] For example let's assign a numeric value to the variable `x`.^[You can specifically define integer, double or complex numeric types. For the sake of simplicity let's use only numeric, for now.] You don't need to define a variable, assigning a value is enough.
+
+```{r}
+x <- 522
+x
+```
+
+Your can also assign character strings,
+
+```{r}
+x <- "BDA503"
+x
+```
+
+and logical. (There is also a factor type, but it is skipped for now.)
+
+```{r}
+x <- FALSE
+x
+```
+
+## Object Types
+
+In this part, object types such as `vector`, `matrix`, `data.frame` and `list` are explained. Although this is not a complete list (e.g. `array` is another object type) and object is a more general concept, these object types are mostly sufficient at beginner and intermediate levels.
+
+### Vector
+
+Most basic data structure is a vector. You can create a simple vector with `c()` (**c**ombine).
+
+```{r}
+x <- c(5,2,2)
+x
+```
+
+You can change any value in a vector by defining its index. Index starts with 1.
+
+```{r}
+x[2] <- 7
+x
+```
+
+You can omit a value by putting a negative index.
+
+```{r}
+x[-2] <- 0
+x
+```
+
+R handles out of bounds index values and returns `NA`.
+
+```{r}
+x[5] <- 10
+x
+```
+
+You can define multiple index values and define rules to choose the index.
+
+```{r}
+x2 <- 10:19 #This is a special representation that generates a vector from a (10) to b (19).
+x2[c(1,3,7)] #Return 1st, 3rd and 7th values.
+x2[(1:3)] #Return 1st to 3rd values.
+```
+
+```{r}
+x2[x2>15] #Return the index values where x2 > 15
+x2>15
+```
+
+You can give names instead of index values.
+
+```{r}
+x3<-c(1,2,3)
+names(x3)<-c("a1","b2","c3")
+x3
+x3["b2"]
+```
+
+If you try to combine different data types, R will transform them to characters or numeric.
+
+```{r}
+c(5,FALSE)
+c(5,FALSE,"BDA503")
+```
+
+Mathematical operations can be easily done with vectors.
+
+```{r}
+vec1 <- 1:5 # This is a special representation of consecutive numbers.
+vec1
+vec2 <- vec1 * 2
+vec2
+vec1 + vec2
+```
+
+Vectors need not to be of equal size (though recommended).
+
+```{r}
+vec1 <- 1:6
+vec2 <- 3:5
+vec1 + vec2
+```
+
+### Matrix
+
+Matrix is more like a stylized vector in a rectangular (matrix) format with some special functions.
+
+```{r}
+mat1<-matrix(1:9, ncol=3, nrow=3)
+mat1
+```
+
+You can manipulate a value of a matrix by giving its index value.
+
+```{r}
+mat1[2,2] <- -10
+mat1
+```
+
+Here are some basic matrix operations.
+
+```{r}
+mat2 <- matrix(c(0,4,1,2,0,0,0,0,1),ncol=3)
+mat2
+t(mat2) # Transpose of a matrix
+solve(mat2) # Inverse of a matrix
+det(mat2) # Determinant value of a matrix
+dim(mat2) # Dimensions of a matrix
+nrow(mat2) # Number of rows of a matrix
+ncol(mat2) # Number of columns of a matrix
+diag(mat2) # Diagonal values of a matrix
+eigen(mat2) # Eigenvalues and eigenvectors of a matrix
+mat1 %*% mat2 # Matrix multiplication
+```
+
+You can also do vector operations with matrices.
+
+```{r}
+mat1 + mat2
+mat1 - mat2
+mat1 / mat2
+mat1 * mat2
+```
+
+You can do operations with matrices and vectors together. Then matrix is treated like a vector with the index column order (i.e. starts from top to bottom, then goes to next column).
+
+```{r}
+mat3 <- matrix(1:9,ncol=3)
+mat3
+vec <- c(0,1,0)
+mat3 + vec
+mat3 * vec
+```
+
+You can name rows and columns of a matrix.
+
+```{r}
+rownames(mat3) <- c("a","b","c")
+colnames(mat3) <- c("y1","y2","y3")
+mat3
+```
+
+### Data Frame
+
+Data frame is the most useful object type. Unlike matrix and vector you can define different data types for different columns.
+
+```{r}
+df1 <- data.frame(some_numbers=1:3,some_names=c("Blood","Sweat","Tears"),some_logical=c(TRUE,FALSE,TRUE))
+df1
+```
+
+You can see the details of an object (in this case the data frame) using `str()` function.
+
+```{r}
+str(df1)
+```
+
+You easily can do operations on a single column using `$`.
+
+```{r}
+df1$some_numbers
+df1$some_names
+df1$some_logical
+
+df1$some_numbers <- df1$some_numbers^2
+df1
+```
+
+There are many example data sets in base R and packages in `data.frame` format. For instance, `EuStockMarkets` contains the closing prices of DAX (Germany), SMI (Switzerland), CAC (French), FTSE (UK) stock market indices.
+
+```{r}
+head(EuStockMarkets) #head() function shows the first rows of a data frame.
+```
+
+### List
+
+Lists can hold many objects (including lists).
+
+```{r}
+list1 <- list(df1,mat3,vec2)
+list1
+list1[[1]]
+```
+
+You can name the objects and call them with the names if you like.
+
+```{r}
+list1 <- list(some_df=df1,some_mat=mat3,vec2)
+list1
+list1$some_df
+```
+
+Lists are frequently used in functions as parameter set holders and for other purposes.
+
+## Useful Base R Functions
+
+Remember, you can always look for help for a function using `?function_name` or `help(function_name)`. This is not an exhaustive list, there are many other fantastic functions in base R.
+
+```{r}
+rep(x=5,times=10) #Repeat a value or a vector
+seq(from=5,to=10,length.out=11) #Create a sequence with the given number of equidistant elements
+seq(from=5,to=10,by=0.25) #Create a sequence with the given increment value
+vec1 <- sample(x=1:10,size=10,replace=FALSE) #Pick 10 numbers randomly without replacement (Note: Your results might differ from this document due to randomness.)
+vec1
+print(vec1/2) #Print the outputs of an object. Useful for later.
+rev(vec1) #Reverse of a vector
+length(vec1) #Number of elements of a vector
+vec1 %% 2 #Mod 2 of the elements in the vector
+min(vec1) #Minimum value of the vector
+max(vec1) #Maximum value of the vector
+factorial(vec1) #Factorial value of all elements of a vector (You can use a single value as well)
+sum(vec1) #Sum of all the values in the vector
+cumsum(vec1) #Cumulative sum of all the values in the vector
+prod(vec1) #Product (multiplication) of all the values in the vector
+cumprod(vec1) #Cumulative product of all the values in the vector
+log(vec1) #Natural logarithm of the values in the vector
+log(vec1,base=2) #Logarithm of base 2.
+exp(vec1) #Exponential values of a vector (e=2.71...)
+vec1^2 #Power of 2
+sqrt(vec1) #Square root
+vecx <- c(1,3,5,7) #Define another vector
+vecy <- c(8,6,4,2) #Define another vector
+pmax(vecx,vecy) #Maximum of each corresponding element of two (or more) vectors
+pmin(vecx,vecy) #Minimum of each corresponding element of two (or more) vectors
+max(vecx,vecy) #Difference between max and pmax
+vec1 <- c(-1,0.5,-1.2,4/3)
+vec1
+abs(vec1) #Absolute value
+round(vec1,digits = 1) #Round a value to a number of digits
+floor(vec1) #Round down value of vector
+ceiling(vec1) #Round up value of vector
+round(0.5) #Interesting case about rounding. Compare with below.
+round(1.5) #Interesting case about rounding. Compare with above.
+vec_table<-sample(letters[1:5],20,replace=TRUE) #Another vector for frequency tables. letters is a predefined object in R.
+vec_table
+table(vec_table) #Easily do a frequency table.
+```
+
+### Sorting, Ranking and Ordering
+
+```{r}
+vec2 <- sample(x=11:20,size=10,replace=FALSE)
+vec2
+sort(vec2) #Sort the values in the vector
+rank(vec2) #Rank of the values in the vector
+order(vec2) #Returns the index values (ascending) of the sorted vector.
+order(vec2,decreasing=TRUE) #Returns the index values (descending) of the sorted vector.
+```
+
+### Logical operators
+
+These operators return TRUE or FALSE values. They are especially useful to
+
+```{r}
+vec1 <- 1:10
+vec1
+vec1 > 5 #Logical (TRUE/FALSE) result of elements greater than 5.
+vec1[vec1 > 5]
+vec1 >= 5 #Logical result of elements greater than or equal to 5.
+vec1[vec1 >= 5]
+vec1 < 5 #Logical result of elements less than 5.
+vec1 <= 5 #Logical result of elements less than or equal to 5.
+vec1 > 5 & vec1 < 9 #and (&) operator
+vec1[vec1 > 5 & vec1 < 9]
+vec1 < 5 | vec1 > 9 #or (|) operator
+vec1[vec1 < 5 | vec1 > 9]
+```
+
+You can also do element by element comparisons of two vectors.
+
+```{r}
+eu_df<- data.frame(EuStockMarkets[1:20,]) #Take the first 20 rows of the stock market index data
+eu_df_returns <- data.frame(DAX=100*(round(eu_df$DAX[-1]/eu_df$DAX[-20],4)-1),
+                            CAC=100*(round(eu_df$CAC[-1]/eu_df$CAC[-20],4)-1)) #Calculate the index percentage returns
+eu_df_returns$DAX_or_CAC <- eu_df_returns$DAX >= eu_df_returns$CAC #If the return of DAX is larger than or equal to CAC return TRUE
+eu_df_returns
+```
+
+### Statistics Functions
+
+Some functions are predefined to facilitate statistics calculations.
+
+```{r}
+vec1 <- sample(1:20,50,replace=TRUE) #Sample 50 numbers from values between 1 to 20
+vec1
+mean(vec1) #Mean
+median(vec1) #Median
+var(vec1) #Variance
+sd(vec1) #Standard deviation
+quantile(vec1) #Quantile values
+quantile(vec1,0.65) #Quantile value of a specific percentage
+summary(vec1) #An aggregate summary
+cor(matrix(sample(1:20,50,replace=TRUE),ncol=5)) #Correlation matrix
+cov(matrix(sample(1:20,50,replace=TRUE),ncol=5)) #Covariance matrix
+```
+
+There are also random number generators and functions related with densities and cdf's of different distributions. Here are the functions for normal distribution.
+
+```{r}
+rnorm(5,mean=0,sd=1) #Generate 5 normally distributed random numbers with mean 0 and sd 1
+dnorm(x=0,mean=0,sd=1) #Density value of a point in a normal distribution with mean 0 and sd 1
+pnorm(q=1.96,mean=0,sd=1) #Cumulative distribution value of a point in a normal distribution with mean 0 and sd 1
+qnorm(p=0.975,mean=0,sd=1) #Quantile value of a point in a normal distribution with mean 0 and sd 1
+```
+
+Other distributions include `dpois` (poisson), `dbinom` (binomial), `dgeom` (geometric), `dunif` (uniform), `dgamma` (gamma), `dexp` (exponential), `dchisq` (chi-squared), `dt` (t distribution), `df` (F distribution), `dcauchy` (cauchy),`dnbinom` (negative binomial), `dhyper` (hypergeometric), `dlnorm` (lognormal), `dbeta` (beta), `dlogis` (logistic) and `dweibull` (weibull) with the same format (e.g. `rpois` generates random poisson numbers).
+
+#### Random Number Generation
+
+**Tip:** For reproducibility use `set.seed`. It will set the randomness seed to a value and random number generation will be the same for (almost) everyone.
+
+```{r}
+set.seed(522)
+rnorm(10)
+```
+
+Let's run it a second time by resetting the seed. The output will be the same.
+
+```{r}
+set.seed(522)
+rnorm(10)
+```
+
+See, the same output happens when randomness seed is restarted at the same value.
+
+### Conversion between data and object types
+
+You can convert numeric to character, logical to numeric using functions starting with `as.` and check the type of the object with `is.` or `typeof()`.
+
+```{r}
+vec1<-c(1,2,3,4)
+is.numeric(vec1) #Is the vector numeric?
+as.character(vec1) #Make the vector character?
+typeof(vec1) #What is the type?
+vec2<-c("a","b","c","d")
+typeof(vec2)
+as.numeric(vec2) # oops
+vec3<-c(TRUE,FALSE,TRUE,FALSE)
+is.logical(vec3)
+as.numeric(vec3)
+as.character(vec3)
+vec3*1 #Convert to numeric with multiplication
+df1<-data.frame(a=c(1,2,3),b=c(4,5,6),c=c(7,8,9))
+as.matrix(df1) #Convert to matrix
+mat1 <- matrix(1:9,ncol=3)
+as.data.frame(mat1)
+```
+
+### String Manipulation
+
+```{r}
+strvec1<-c("BDA503","FE511","IE422")
+grep("ETM",strvec1) #Index values of character strings including FE
+grepl("ETM",strvec1) #TRUE FALSE statements of character strings including FE
+gsub("ETM","IE",strvec1) #Replacing strings
+nchar(strvec1) #Return number of characters in string
+substr(strvec1,start=1,stop=2) #Trim the string from start to stop
+paste("ETM","522",sep="-") #Concatenate two strings with a separator.
+paste0("ETM","522") #Concatenate two strings without a separator, equivalent of paste(.,sep="").
+paste(strvec1,collapse="+") #Concatenate elements of a vector with a collapse character.
+```
+
+## Conditionals (If-Else)
+
+Conditionals are straightforward. If a statement returns `TRUE`, then the code chunk defined by the brackets are executed.
+
+```{r}
+course_name <- "BDA503" #Define the course name.
+
+if(course_name=="BDA503"){ #If the course name is FE522.
+  print("Correct course.")
+}
+```
+
+It is possible to execute some other code chunk if the statement is `FALSE` with `else` and add other conditionals using `else if`.
+
+```{r}
+course_name <- "FE511" #Define the course name.
+
+if(course_name=="BDA503"){ #If the course name is FE522.
+  print("Correct course.")
+}else if(grepl("ETM",course_name)){ #If the course name include FE but it is not FE522.
+  print("Wrong course but close.")
+}else{ #If none of the above
+  print("Wrong course.")
+}
+```
+
+`if` conditional statements accept only one value. If you want to check for all elements in a vector use `ifelse()`.
+
+```{r}
+course_name<-c("BDA503","FE511","IE422")
+ifelse(course_name=="BDA503","Correct Course","Wrong Course")
+```
+
+## Loops
+
+Although you are warned that R works slowly with loops (especially loops within loops), it is usually inevitable to use the loops.
+
+### For
+
+For loops consist of a loop variable and a scope.
+
+```{r}
+val<-2
+for(i in 1:3){ #Define the loop variable and scope
+  print(val^i)
+}
+```
+
+Scope does not need to be numbers. For returns whatever in the scope in index order
+
+```{r}
+for(i in c("BDA503","FE511","IE422")){
+  print(i)
+}
+```
+
+### While
+
+While is a less frequently used loop type. It repeats the code while a condition is met. It first checks the condition. When it is not satisfied, it skips the code chunk.
+
+```{r}
+x <- 0
+while(x < 3){
+  x <- x+1
+  print(paste0("x is ",x," x is not at the desired level. Desired level is above 3."))
+}
+```
+
+## Functions
+
+R lets you to define functions easily, with a flexible format. Here are some examples.
+
+```{r}
+fun1<-function(par1="This is a default value"){
+  print(par1)
+}
+```
+If there is a default value defined on the function you do not need to enter any value if you are comfortable with.
+```{r}
+fun1()
+```
+You can change the parameters when you call the function.
+```{r}
+fun1(par1="Congratulations, you changed the parameter.")
+```
+If you are careful about the order of your entered parameters, you do not need to write the parameter name.
+```{r}
+fun1("Wow you do it like a pro without parameter names!")
+```
+
+Here is another simple example. Let's calculate the future value of an initial investment compounded interest.
+
+```{r}
+calc_future_value<-function(present_value,interest_rate,years){
+  return(present_value*(1+interest_rate)^years)
+}
+calc_future_value(100,0.05,5)
+```
+
+Put a technical analysis.
+
+## Input Output (I/O) Operations
+
+Reading from and writing to data files will be unavoidable at some point. While it is useful to know the fundamental functions, I/O operations usually require experience. In other words, you will face many challenges to read a table from an excel file or writing outputs to txt files. Though, it gets easier
+
+Frequently use the help of these functions to understand their inner workings. For `xlsx` files and other data types (e.g. JSON, SQL) there are packages.
+
+```{r,eval=FALSE}
+setwd("~/some_path") #Set working directory path.
+getwd() #Get the working directory path.
+scan(file="some_data_file.txt") #Read data from file.
+read.table(file="some_data_file.csv") #Read xls or csv files but not xlsx files. You will need a package for that.
+source("path_to_some_r_file/some_r_file.r")
+write("writing_something",file="some_document_file.txt")
+write.table() #Writing to csv or xls. Similar logic to to read.table with opposite function.
+file.choose() #Manually choosing a file from computer. You can use it like read.table(file.choose())
+dir(path="some_path") #Files in the path directory.
+```
+
+Important: Defining paths in R can be different in Windows and Mac. See [this link](https://cran.r-project.org/bin/windows/base/rw-FAQ.html#What-are-HOME-and-working-directories_003f) for more detail.
+
+```{r,eval=FALSE}
+dir("C:/Desktop/") #Windows style 1
+dir("C:\\Desktop\\") #Windows style 2
+dir("~/Documents/") #Mac and Linux style. Might work for Windows too.
+```
+
+Tip: Sometimes, R reads columns containing characters as `factor` data type. It is not covered in this tutorial and it is tough to handle and convert. Therefore using the following code will prevent R to read character strings as factors.
+
+```{r,eval=FALSE}
+options(stringsAsFactors=FALSE)
+```
+
+If your character vector is read as a factor, use `as.character()` function. If your numeric vector is read as a factor, use `as.numeric(as.character())` function. Examples are given below.
+
+```{r,eval=FALSE}
+factvec<-factor(c("a","b","c","a")) #Factor data vector
+factvec
+as.character(factvec) #Convert to character
+factvec2<-factor(c(10,20,30,40,10)) #Factor data vector with numbers only
+factvec2
+as.numeric(factvec2) #If you want to convert directly to numeric, output will not be desirable.
+as.numeric(as.character(factvec2))
+```
+
+### RData
+
+RData is a special data file type used by R. It is quite useful and efficient to store (better than csv). One disadvantage is it is not as common as csv, so reading RData outside R is a challenge.
+
+```{r,eval=FALSE}
+load(path="some_RData")
+save(some_data_frame,file="some_file.RData")
+```
+
+## Packages
+
+Packages are the most important asset class of R. These last years have seen a rapid expansion of R packages for almost any topic of interest that need computation. There are two steps to use a package; to install and to load.
+
+```{r,eval=FALSE}
+install.packages("package_name") #Install command
+library(package_name) #Load the package require() also works. No quotes!
+```
+
+**Remember:** You need to install a package only once. It is downloaded and ready to use whenever you load the package with `library()`. Packages are updated from time to time. To update your installed packages, use `update.packages()` command.
+
+Below displays an example of a package use from the start. You will see how it is done in base R and how it can be enhanced with the packages.
+
+### Plotting
+
+Plotting in R can be a bit problematic and hard. Let's plot the returns of stock indexes of the previous `EuStockMarkets` data.
+
+```{r}
+#Let's redo what we did previously.
+eu_df<- data.frame(EuStockMarkets[1:20,]) #Take the first 20 rows of the stock market index data
+eu_df_returns <- data.frame(DAX=100*(round(eu_df$DAX[-1]/eu_df$DAX[-20],4)-1),
+                            CAC=100*(round(eu_df$CAC[-1]/eu_df$CAC[-20],4)-1)) #Calculate the index percentage returns
+eu_df_returns
+```
+
+Base R plotting is as following.
+
+```{r}
+plot(x=1:nrow(eu_df_returns),
+     y=eu_df_returns$DAX,
+     type="l",col="red",
+     ylim=c(min(unlist(eu_df_returns)),max(unlist(eu_df_returns))),
+     ylab="Returns (%)",
+     xlab="Time Index")
+lines(eu_df_returns$CAC)
+```
+
+You can probably do better with `ggplot2` package. It has more beautiful aesthetics, more readable code and better options. Even with the default values your plots will look better. Here is a simple implementation of the previous example.
+
+```{r}
+if(!("ggplot2" %in% rownames(installed.packages()))){
+  install.packages("ggplot2") #Install the package (you can skip it if it is already installed)
+}
+library(ggplot2)
+ggplot(data=eu_df_returns,aes(x=1:nrow(eu_df_returns))) +
+geom_line(aes(y=DAX,color="DAX")) +
+geom_line(aes(y=CAC,color="CAC")) +
+labs(x="Time Index",y="Returns (%)")
+```
+
+## Recommendations
+
+R is quite extensive and the best ways to quickly learn are to write as much code as possible (this is the boring advice) and expose yourself to information by subscribing to newsletters, following related Twitter accounts and Facebook pages. Some prominently beneficial sources are given below.
+
+[R CRAN Task View](https://cran.r-project.org/web/views/): Curated lists of packages categorized on the purpose of use. They have categories such as Finance, Time Series and Econometrics. It is a good way to start searching for packages.
+
+[Stackexchange](http://stackexchange.com/): Programmer's best friend. It is the umbrella site for highly technical Q\&A sites such as [Stack Overflow](http://stackoverflow.com/) (for general programming), [Cross Validated](http://stats.stackexchange.com/) (statistics and data science) and [Quantitative Finance](http://quant.stackexchange.com/). You can ask your programming problems here by providing an MWE (minimal working example)
+
+[Kaggle](http://kaggle.com/): There are many data science tasks, data sets and codes in here. Known for data competitions.
+
+[Quandl](http://quandl.com/): Vast collection of data sets mainly on economics and finance. Great R support (even has a package).
+
+[GitHub](https://github.com/): Most popular online code repository for git^[Git is a version controlling system mainly for software development but basically for any project. It mainly replaces the practice of code_finalfinalfinal.r and finalreport_lastlastlastthisisthelastipromise.docx] based projects. Plus, putting R packages on GitHub prior to release on CRAN is a popular practice (advanced topic).
+
+[Coursera](https://www.coursera.org/): Online learning at its best. There are many good quality quantitative finance, R and data science courses in here.
+
+[R-bloggers](https://www.r-bloggers.com): Very useful site about R. I personally recommend subscribing to their newsletter and following their Twitter and Facebook accounts.
+
+[R-SIG-FIN](https://stat.ethz.ch/mailman/listinfo/r-sig-finance): A mail group about R and Finance. A bit outdated but you can still search the archives.
+
+[ROpenSci](http://ropensci.org/): An organization promoting reproducible research with R. They have many good packages also.
+
+### R Cheat Sheets
+
+There are many code cheat sheets on the internet. Here are some. I will update the list with new additions.
+
+[RStudio Cheat Sheets](https://www.rstudio.com/resources/cheatsheets/): Cheat sheets on base R, plotting and some very useful packages (i.e. `dplyr`, `ggplot2`, `shiny`, `rmarkdown`).
+
+[Data Management](https://sites.ualberta.ca/~ahamann/teaching/renr690/R_Cheat_Data.pdf)
+
+[Quandl Cheat Sheet](https://s3.amazonaws.com/quandl-static-content/Documents/Quandl+-+R+Cheat+Sheet.pdf): A cheat sheet by Quandl. There are also tips to use the `quandl` package.
+
+[R Reference Card](https://cran.r-project.org/doc/contrib/Short-refcard.pdf): This one is from official R site.
+
+[Google's R Style Guide](https://google.github.io/styleguide/Rguide.xml): This is more about styling your code. Best practices for readability.

@@ -299,3 +299,7 @@ rsp_game("rock")
 
 
 Check course webpage for more exercises!
+
+## Other Links
+
++ [Base R Cheat Sheet](http://github.com/rstudio/cheatsheets/blob/main/base-r.pdf)
