@@ -20,6 +20,8 @@ book:
     - part: advanced.qmd
       chapters:
         - reticulate.qmd
+        - dplyr-joins.qmd
+        - rvest.qmd
 
 bibliography: references.bib
 

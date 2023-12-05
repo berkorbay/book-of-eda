@@ -4,4 +4,4 @@ This "book", Book of Exploratory Data Analysis (EDA), is actually the organized 
 
 Materials will progressively emerge...
 
-Latest update in 2022-10-06
+Latest update in 2023-11-23

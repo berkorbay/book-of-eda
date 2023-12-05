@@ -1,0 +1,118 @@
+# Website parsing with rvest {.unnumbered}
+
+# What is `rvest`?
+
+`rvest` is a very useful R package to parse HTML files of web pages. Usually information is not directly provided in Excel files but embedded in one or more pages in a web site.
+
+## Main sources
+
++ `rvest` main development page: <https://rvest.tidyverse.org/>
++ [Tutorial on rvest, httr and RSelenium](https://github.com/yusuzech/r-web-scraping-cheat-sheet)
+
+## `rvest` Usage Examples
+
+Since `rvest` is part of the tidyverse package we can easily use pipes with it. 
+
+```{r}
+#| message: false
+library(tidyverse)
+library(rvest)
+```
+
+In the first example, we will extract tables from BKM's (Interbank Card Center) sectoral development reports ([see the website](https://bkm.com.tr/secilen-aya-ait-sektorel-gelisim/?filter_year=2020&filter_month=1&List=Listele)). Let's start with getting the web page.
+
+```{r}
+#| cache: true
+the_url <- "https://bkm.com.tr/secilen-aya-ait-sektorel-gelisim/?filter_year=2020&filter_month=1&List=Listele"
+html_obj <- read_html(the_url)
+```
+
+When we check the object itself, we see it is a bunch of html code. We are on a good path.
+
+```{r}
+#| eval: false
+html_obj
+```
+
+We can examine the html structure by using the powerful `html_structure()` function. Since it is a bit of verbose see for yourself. 
+
+```{r}
+#| eval: false
+html_obj %>% html_structure()
+```
+
+We can simply extract the table using `html_table()`. If you get an error about inconsistent fields, use parameter `fill=TRUE`.
+
+```{r}
+#| echo: false
+#| eval: true
+#| cache: true
+read_html(the_url) %>% html_table(fill = TRUE)
+```
+
+
+```{r}
+#| echo: true
+#| eval: false
+html_obj %>% html_table(fill = TRUE)
+```
+
+Now we are getting somewhere on the fourth item but it is not up to our quality standard. Let's deploy `dplyr` functions to make it better.
+
+```{r}
+#| cache: true
+html_df <- read_html(the_url) %>%
+    html_table(fill = TRUE) %>%
+    `[[`(4)
+
+html_df %>%
+    # Since we do not have too many columns let's rename them manually
+    # number (num) or value (val) of transactions (txn)
+    # by credit card (cc) or debit card (dc)
+    rename(category = 1, num_txn_cc = 2, num_txn_dc = 3, val_txn_cc = 4, val_txn_dc = 5) %>%
+    # remove the first two rows because they are actually titles
+    slice(-(1:2)) %>%
+    # then convert every numeric value by using parse_number function from readr
+    mutate(
+        across(
+            -category,
+            ~ readr::parse_number(.,
+                locale = readr::locale(decimal_mark = ",", grouping_mark = ".")
+            )
+        )
+    )
+```
+
+In the second example we will harvest the links from [Istanbul's Şehir Hatları (ferry line) domestic trips](https://sehirhatlari.istanbul/en/timetables/domestic-trips).
+
+```{r}
+#| eval: true
+html_obj <- read_html("https://sehirhatlari.istanbul/en/timetables/domestic-trips")
+```
+
+Let's get all the links using "a" nodes and "href" attributes. We are looking for "domestic trips" links.
+
+```{r}
+links_vec <- html_obj %>%
+    html_nodes("a") %>%
+    html_attr("href")
+links_vec
+```
+
+With a simple regex and adding the root url we can get all the relevant links from the web page.
+
+```{r}
+domestic_trips_links <- paste0("https://sehirhatlari.istanbul", links_vec[grepl("/domestic-trips/", links_vec)])
+domestic_trips_links
+```
+
+You can click all the links below.
+
+```{r,results='asis'}
+paste0("+ ", domestic_trips_links, " <br>", collapse = " ")
+```
+
+## Exercises
+
++ Collect multiple periods from BKM page and create an analysis.
++ Collect all timetables from Şehir Hatları domestic lines and create a timetable Shiny app.

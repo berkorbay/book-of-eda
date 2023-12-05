@@ -28,13 +28,15 @@ py_config()
 
 For available configurations `py_discover_config` can be used.
 
-```{r, eval=FALSE}
+```{r}
+#| eval: false
 py_discover_config()
 ```
 
 `reticulate` can use other python installations, virtual environments and conda versions. Although it is a great convenience, intricacies and delicateness of Python versions might still hurt your workflows.
 
-```{r,eval=FALSE}
+```{r}
+#| eval: false
 use_python() ## python path
 use_virtualenv() ## virtual environment name
 use_condaenv() ## conda environment
@@ -49,13 +51,18 @@ In this section we will see some methodologies to use with `reticulate`.
 
 This is the fundamental and (in my opinion) worst way to benefit from Python in R. Because translation of style is imperfect and might not work in every case.
 
-Here is an example with pandas. 
+Here is an example with `pandas`. Install `pandas` if not installed. 
+
+```{r}
+#| eval: false
+py_install("pandas")
+```
 
 ```{r}
 ## similar to import pandas as pd
-pd <- import("pandas") 
-## create a simple dataframe 
-df_pandas <- pd$DataFrame(data=list(col1=c(2,1,3),col2=c("a","b","c"))) 
+pd <- import("pandas")
+## create a simple dataframe
+df_pandas <- pd$DataFrame(data = list(col1 = c(2, 1, 3), col2 = c("a", "b", "c")))
 
 df_pandas
 ```
@@ -64,7 +71,7 @@ Let's try a simple example.
 
 ```{r}
 os <- import("os")
-os$path$join("a","b","c")
+os$path$join("a", "b", "c")
 ```
 
 Caveats: Some functions working on console might not work on RMarkdown
@@ -75,7 +82,7 @@ try(df_pandas$sort_values("col1"))
 
 ```{r}
 ## filter using query fails both on console and rmarkdown
-try(df_pandas$query('col1 > 1.0'))
+try(df_pandas$query("col1 > 1.0"))
 ```
 
 ### Call Python in RMarkdown chunk
@@ -84,7 +91,7 @@ The format is similar to an R chunk but instead of `r` write `python`.
 
 ```{r,echo=FALSE}
 output_code <-
-"```{python}
+    "```{python}
 #your python code here
 ```\n"
 
@@ -147,12 +154,12 @@ Note: For RMarkdown demonstration purposes below we;
 + then called the function as R function
 
 ```{r}
-pyfile <- tempfile(fileext=".py")
-cat('def area_of_triangle(h,x):
-  return h*x/2',file=pyfile)
+pyfile <- tempfile(fileext = ".py")
+cat("def area_of_triangle(h,x):
+  return h*x/2", file = pyfile)
 source_python(pyfile)
 
-area_of_triangle(3,5)
+area_of_triangle(3, 5)
 ```
 
 But deep down it is a Python function.

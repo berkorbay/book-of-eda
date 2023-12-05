@@ -1,12 +1,4 @@
----
-title: "dplyr"
-author: "Berk Orbay"
-date: "2020-06-01"
-output:
-  html_document:
-    toc: true
-    toc_depth: 3
----
+# dplyr
 
 ```{r setup, include=FALSE}
 answer_echo = FALSE

@@ -1,0 +1,99 @@
+# Joins with dplyr {.unnumbered}
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Data Preparation
+
+This part follows the notes of [STAT 545 of Jenny Bryan](https://stat545.com/join-cheatsheet.html)
+
+```{r}
+library(tidyverse) ## dplyr provides the join functions
+
+superheroes <- tibble::tribble(
+    ~name, ~alignment, ~gender, ~publisher,
+    "Magneto", "bad", "male", "Marvel",
+    "Storm", "good", "female", "Marvel",
+    "Mystique", "bad", "female", "Marvel",
+    "Batman", "good", "male", "DC",
+    "Joker", "bad", "male", "DC",
+    "Catwoman", "bad", "female", "DC",
+    "Hellboy", "good", "male", "Dark Horse Comics"
+)
+
+publishers <- tibble::tribble(
+    ~publisher, ~yr_founded,
+    "DC", 1934L,
+    "Marvel", 1939L,
+    "Image", 1992L
+)
+```
+
+We have two data sets. Our first data set (superheroes) contains information about fictional characters from graphic novels. There are 7 characters from different publishers. Information about those characters include name, alignment (good or bad), gender (male or female) and the publishers where they belong to.
+
+Our second data set is about publishers and the year they are founded. These two data sets are the perfect minimal example to introduce data table joins because they have a common (key) column and they have both similar and disparate values. 
+
+```{r}
+print(superheroes)
+print(publishers)
+```
+
+
+
+# Joins
+
+We call data sets left and right (hence left join, right join), or X and Y (usually X denotes left and Y denotes right). Here we will use superheroes and publishers in different positions but usually superheroes will be on the left.
+
+## Left Join
+
+In left join, all rows of X are preserved, only relevant rows Y and multiply rows if there are multiple matchings.
+
+```{r}
+left_join(superheroes, publishers, by = "publisher")
+```
+
+Right join is the same as left join but the main data set is Y.
+
+```{r}
+right_join(superheroes, publishers, by = "publisher") %>% arrange(name)
+```
+
+```{r}
+left_join(publishers, superheroes, by = "publisher") %>%
+    arrange(name) %>%
+    relocate(publisher, yr_founded, .after = gender)
+```
+
+## Inner Join
+
+In inner join, only rows with common values are returned and rows are multiplied if there are multiple matchings.
+
+```{r}
+inner_join(superheroes, publishers, by = "publisher")
+```
+
+## Semi Join
+
+Semi Join is very similar to inner join but without columns from Y.
+
+```{r}
+semi_join(superheroes, publishers, by = "publisher")
+```
+
+## Full Join
+
+Full join returns all rows and columns from both X and Y and both multiplies multiple matchings and compensates for missing matches.
+
+```{r}
+full_join(superheroes, publishers, by = "publisher")
+```
+
+## Anti Join
+
+Anti join returns all rows from X which do not have information (based on key column) in Y and returns only columns from X.
+
+```{r}
+anti_join(superheroes, publishers, by = "publisher")
+```
+

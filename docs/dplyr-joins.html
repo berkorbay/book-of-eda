@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Book of Exploratory Data Analysis (EDA) - Using Python and R Together</title>
+<title>Book of Exploratory Data Analysis (EDA) - Joins with dplyr</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -64,8 +64,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./dplyr-joins.html" rel="next">
-<link href="./advanced.html" rel="prev">
+<link href="./rvest.html" rel="next">
+<link href="./reticulate.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -108,7 +108,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./advanced.html">Advanced</a></li><li class="breadcrumb-item"><a href="./reticulate.html">Using Python and R Together</a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./advanced.html">Advanced</a></li><li class="breadcrumb-item"><a href="./dplyr-joins.html">Joins with dplyr</a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -203,13 +203,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./reticulate.html" class="sidebar-item-text sidebar-link active">
+  <a href="./reticulate.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Using Python and R Together</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./dplyr-joins.html" class="sidebar-item-text sidebar-link">
+  <a href="./dplyr-joins.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Joins with dplyr</span></a>
   </div>
 </li>
@@ -231,13 +231,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#initialization" id="toc-initialization" class="nav-link active" data-scroll-target="#initialization">Initialization</a></li>
-  <li><a href="#methods-and-examples" id="toc-methods-and-examples" class="nav-link" data-scroll-target="#methods-and-examples">Methods and Examples</a>
+  <li><a href="#data-preparation" id="toc-data-preparation" class="nav-link active" data-scroll-target="#data-preparation">Data Preparation</a></li>
+  <li><a href="#joins" id="toc-joins" class="nav-link" data-scroll-target="#joins">Joins</a>
   <ul class="collapse">
-  <li><a href="#call-python-functions-r-style" id="toc-call-python-functions-r-style" class="nav-link" data-scroll-target="#call-python-functions-r-style">Call Python functions R style</a></li>
-  <li><a href="#call-python-in-rmarkdown-chunk" id="toc-call-python-in-rmarkdown-chunk" class="nav-link" data-scroll-target="#call-python-in-rmarkdown-chunk">Call Python in RMarkdown chunk</a></li>
-  <li><a href="#source-python-script" id="toc-source-python-script" class="nav-link" data-scroll-target="#source-python-script">Source Python Script</a></li>
-  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  <li><a href="#left-join" id="toc-left-join" class="nav-link" data-scroll-target="#left-join">Left Join</a></li>
+  <li><a href="#inner-join" id="toc-inner-join" class="nav-link" data-scroll-target="#inner-join">Inner Join</a></li>
+  <li><a href="#semi-join" id="toc-semi-join" class="nav-link" data-scroll-target="#semi-join">Semi Join</a></li>
+  <li><a href="#full-join" id="toc-full-join" class="nav-link" data-scroll-target="#full-join">Full Join</a></li>
+  <li><a href="#anti-join" id="toc-anti-join" class="nav-link" data-scroll-target="#anti-join">Anti Join</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -247,7 +248,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Using Python and R Together</h1>
+<h1 class="title">Joins with dplyr</h1>
 </div>
 
 
@@ -262,194 +263,191 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </header>
 
-<p>In the ever-increasing requirements era of data science, Python is one of the fundamental tools that a data scientist should know about. Even though R is quite elegant and enough in many data related applications, a mix of Python might also be required to get the job done. One of the reasons is to benefit from API connections because Python enjoys first class support (e.g.&nbsp;native SDK) in many services. For instance, using <code>boto3</code> package for AWS was quite useful (before the <a href="https://paws-r.github.io/">paws R package</a>).</p>
-<p>RStudio especially positions itself as “A Single Home for R and Python Data Science” in <a href="https://www.rstudio.com/blog/one-home-for-r-and-python/">their blog post</a>. It is also the main reason why they created and support the <code>reticulate</code> R package. Before <code>reticulate</code>, Python integration was still possible but much more difficult in many aspects. It still might have quirks but <code>reticulate</code> provides much better integration.</p>
-<p>In this tutorial, we are going to do simple examples using <code>reticulate</code> package. This tutorial is not exhaustive. For better coverage, check the <a href="https://rstudio.github.io/reticulate/">official package page</a>.</p>
-<section id="initialization" class="level2">
-<h2 class="anchored" data-anchor-id="initialization">Initialization</h2>
-<p>It always starts with the loading of the package.</p>
+<section id="data-preparation" class="level1">
+<h1>Data Preparation</h1>
+<p>This part follows the notes of <a href="https://stat545.com/join-cheatsheet.html">STAT 545 of Jenny Bryan</a></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(reticulate)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse) <span class="do">## dplyr provides the join functions</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.3     ✔ readr     2.1.4
+✔ forcats   1.0.0     ✔ stringr   1.5.0
+✔ ggplot2   3.4.3     ✔ tibble    3.2.1
+✔ lubridate 1.9.2     ✔ tidyr     1.3.0
+✔ purrr     1.0.2     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
 </div>
-<p>Python has multiple versions (thankfully they phased out Python 2 but still a pain in many operating systems) You can learn the current python version PATH using <code>Sys.which</code> function. Output will differ in different systems and installations.</p>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>superheroes <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tribble</span>(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="sc">~</span>name, <span class="sc">~</span>alignment, <span class="sc">~</span>gender, <span class="sc">~</span>publisher,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Magneto"</span>, <span class="st">"bad"</span>, <span class="st">"male"</span>, <span class="st">"Marvel"</span>,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Storm"</span>, <span class="st">"good"</span>, <span class="st">"female"</span>, <span class="st">"Marvel"</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Mystique"</span>, <span class="st">"bad"</span>, <span class="st">"female"</span>, <span class="st">"Marvel"</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Batman"</span>, <span class="st">"good"</span>, <span class="st">"male"</span>, <span class="st">"DC"</span>,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Joker"</span>, <span class="st">"bad"</span>, <span class="st">"male"</span>, <span class="st">"DC"</span>,</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Catwoman"</span>, <span class="st">"bad"</span>, <span class="st">"female"</span>, <span class="st">"DC"</span>,</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Hellboy"</span>, <span class="st">"good"</span>, <span class="st">"male"</span>, <span class="st">"Dark Horse Comics"</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>publishers <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tribble</span>(</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    <span class="sc">~</span>publisher, <span class="sc">~</span>yr_founded,</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"DC"</span>, 1934L,</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Marvel"</span>, 1939L,</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Image"</span>, 1992L</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We have two data sets. Our first data set (superheroes) contains information about fictional characters from graphic novels. There are 7 characters from different publishers. Information about those characters include name, alignment (good or bad), gender (male or female) and the publishers where they belong to.</p>
+<p>Our second data set is about publishers and the year they are founded. These two data sets are the perfect minimal example to introduce data table joins because they have a common (key) column and they have both similar and disparate values.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.which</span>(<span class="st">"python"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(superheroes)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>                             python 
-"/Users/rocket/.pyenv/shims/python" </code></pre>
+<pre><code># A tibble: 7 × 4
+  name     alignment gender publisher        
+  &lt;chr&gt;    &lt;chr&gt;     &lt;chr&gt;  &lt;chr&gt;            
+1 Magneto  bad       male   Marvel           
+2 Storm    good      female Marvel           
+3 Mystique bad       female Marvel           
+4 Batman   good      male   DC               
+5 Joker    bad       male   DC               
+6 Catwoman bad       female DC               
+7 Hellboy  good      male   Dark Horse Comics</code></pre>
 </div>
-</div>
-<p>For better detail, <code>py_config</code> is a good function. Output will differ in different systems and installations.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">py_config</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(publishers)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>python:         /Users/rocket/.virtualenvs/r-reticulate/bin/python
-libpython:      /Users/rocket/.pyenv/versions/3.11.6/lib/libpython3.11.dylib
-pythonhome:     /Users/rocket/.virtualenvs/r-reticulate:/Users/rocket/.virtualenvs/r-reticulate
-version:        3.11.6 (main, Nov 23 2023, 13:24:35) [Clang 14.0.0 (clang-1400.0.29.202)]
-numpy:          /Users/rocket/.virtualenvs/r-reticulate/lib/python3.11/site-packages/numpy
-numpy_version:  1.26.2</code></pre>
-</div>
-</div>
-<p>For available configurations <code>py_discover_config</code> can be used.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">py_discover_config</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p><code>reticulate</code> can use other python installations, virtual environments and conda versions. Although it is a great convenience, intricacies and delicateness of Python versions might still hurt your workflows.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">use_python</span>() <span class="do">## python path</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">use_virtualenv</span>() <span class="do">## virtual environment name</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">use_condaenv</span>() <span class="do">## conda environment</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-<section id="methods-and-examples" class="level2">
-<h2 class="anchored" data-anchor-id="methods-and-examples">Methods and Examples</h2>
-<p>In this section we will see some methodologies to use with <code>reticulate</code>.</p>
-<section id="call-python-functions-r-style" class="level3">
-<h3 class="anchored" data-anchor-id="call-python-functions-r-style">Call Python functions R style</h3>
-<p>This is the fundamental and (in my opinion) worst way to benefit from Python in R. Because translation of style is imperfect and might not work in every case.</p>
-<p>Here is an example with <code>pandas</code>. Install <code>pandas</code> if not installed.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">py_install</span>(<span class="st">"pandas"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="do">## similar to import pandas as pd</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>pd <span class="ot">&lt;-</span> <span class="fu">import</span>(<span class="st">"pandas"</span>)</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="do">## create a simple dataframe</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>df_pandas <span class="ot">&lt;-</span> pd<span class="sc">$</span><span class="fu">DataFrame</span>(<span class="at">data =</span> <span class="fu">list</span>(<span class="at">col1 =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">3</span>), <span class="at">col2 =</span> <span class="fu">c</span>(<span class="st">"a"</span>, <span class="st">"b"</span>, <span class="st">"c"</span>)))</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>df_pandas</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>  col1 col2
-1    2    a
-2    1    b
-3    3    c</code></pre>
-</div>
-</div>
-<p>Let’s try a simple example.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>os <span class="ot">&lt;-</span> <span class="fu">import</span>(<span class="st">"os"</span>)</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>os<span class="sc">$</span>path<span class="sc">$</span><span class="fu">join</span>(<span class="st">"a"</span>, <span class="st">"b"</span>, <span class="st">"c"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] "a/b/c"</code></pre>
-</div>
-</div>
-<p>Caveats: Some functions working on console might not work on RMarkdown</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">try</span>(df_pandas<span class="sc">$</span><span class="fu">sort_values</span>(<span class="st">"col1"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Error in try(df_pandas$sort_values("col1")) : 
-  attempt to apply non-function</code></pre>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="do">## filter using query fails both on console and rmarkdown</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">try</span>(df_pandas<span class="sc">$</span><span class="fu">query</span>(<span class="st">"col1 &gt; 1.0"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Error in try(df_pandas$query("col1 &gt; 1.0")) : 
-  attempt to apply non-function</code></pre>
+<pre><code># A tibble: 3 × 2
+  publisher yr_founded
+  &lt;chr&gt;          &lt;int&gt;
+1 DC              1934
+2 Marvel          1939
+3 Image           1992</code></pre>
 </div>
 </div>
 </section>
-<section id="call-python-in-rmarkdown-chunk" class="level3">
-<h3 class="anchored" data-anchor-id="call-python-in-rmarkdown-chunk">Call Python in RMarkdown chunk</h3>
-<p>The format is similar to an R chunk but instead of <code>r</code> write <code>python</code>.</p>
+<section id="joins" class="level1">
+<h1>Joins</h1>
+<p>We call data sets left and right (hence left join, right join), or X and Y (usually X denotes left and Y denotes right). Here we will use superheroes and publishers in different positions but usually superheroes will be on the left.</p>
+<section id="left-join" class="level2">
+<h2 class="anchored" data-anchor-id="left-join">Left Join</h2>
+<p>In left join, all rows of X are preserved, only relevant rows Y and multiply rows if there are multiple matchings.</p>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">left_join</span>(superheroes, publishers, <span class="at">by =</span> <span class="st">"publisher"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>```{python}
-#your python code here
-```</code></pre>
+<pre><code># A tibble: 7 × 5
+  name     alignment gender publisher         yr_founded
+  &lt;chr&gt;    &lt;chr&gt;     &lt;chr&gt;  &lt;chr&gt;                  &lt;int&gt;
+1 Magneto  bad       male   Marvel                  1939
+2 Storm    good      female Marvel                  1939
+3 Mystique bad       female Marvel                  1939
+4 Batman   good      male   DC                      1934
+5 Joker    bad       male   DC                      1934
+6 Catwoman bad       female DC                      1934
+7 Hellboy  good      male   Dark Horse Comics         NA</code></pre>
 </div>
 </div>
-<p>Here is an example</p>
+<p>Right join is the same as left join but the main data set is Y.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>os.path.join(<span class="st">"a"</span>,<span class="st">"b"</span>,<span class="st">"c"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">right_join</span>(superheroes, publishers, <span class="at">by =</span> <span class="st">"publisher"</span>) <span class="sc">%&gt;%</span> <span class="fu">arrange</span>(name)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>'a/b/c'</code></pre>
-</div>
-</div>
-<p>Our pandas examples also works in this case.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>pandas_df_py <span class="op">=</span> pd.DataFrame(data<span class="op">=</span>{<span class="st">'col1'</span>:[<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">3</span>],<span class="st">'col2'</span>:[<span class="st">'a'</span>,<span class="st">'b'</span>,<span class="st">'c'</span>]}) </span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>pandas_df_py</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>   col1 col2
-0     2    a
-1     1    b
-2     3    c</code></pre>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>pandas_df_py.sort_values(<span class="st">'col1'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>   col1 col2
-1     1    b
-0     2    a
-2     3    c</code></pre>
+<pre><code># A tibble: 7 × 5
+  name     alignment gender publisher yr_founded
+  &lt;chr&gt;    &lt;chr&gt;     &lt;chr&gt;  &lt;chr&gt;          &lt;int&gt;
+1 Batman   good      male   DC              1934
+2 Catwoman bad       female DC              1934
+3 Joker    bad       male   DC              1934
+4 Magneto  bad       male   Marvel          1939
+5 Mystique bad       female Marvel          1939
+6 Storm    good      female Marvel          1939
+7 &lt;NA&gt;     &lt;NA&gt;      &lt;NA&gt;   Image           1992</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co">## filter using query fails both on console and rmarkdown</span></span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>pandas_df_py.query(<span class="st">'col1 &gt; 1.0'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">left_join</span>(publishers, superheroes, <span class="at">by =</span> <span class="st">"publisher"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(name) <span class="sc">%&gt;%</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">relocate</span>(publisher, yr_founded, <span class="at">.after =</span> gender)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>   col1 col2
-0     2    a
-2     3    c</code></pre>
+<pre><code># A tibble: 7 × 5
+  name     alignment gender publisher yr_founded
+  &lt;chr&gt;    &lt;chr&gt;     &lt;chr&gt;  &lt;chr&gt;          &lt;int&gt;
+1 Batman   good      male   DC              1934
+2 Catwoman bad       female DC              1934
+3 Joker    bad       male   DC              1934
+4 Magneto  bad       male   Marvel          1939
+5 Mystique bad       female Marvel          1939
+6 Storm    good      female Marvel          1939
+7 &lt;NA&gt;     &lt;NA&gt;      &lt;NA&gt;   Image           1992</code></pre>
 </div>
 </div>
 </section>
-<section id="source-python-script" class="level3">
-<h3 class="anchored" data-anchor-id="source-python-script">Source Python Script</h3>
-<p>Personally, the most convenient way to use Python code is to source a <code>.py</code> file. Even though interoperability is a great idea, keeping Python and R codes as separate as possible will save you from a lot of headache in the future (at least with the current implementation).</p>
-<p>We can source any python file using <code>source_python()</code> function easily. Let’s name our python file <code>triangle.py</code> and write the following.</p>
+<section id="inner-join" class="level2">
+<h2 class="anchored" data-anchor-id="inner-join">Inner Join</h2>
+<p>In inner join, only rows with common values are returned and rows are multiplied if there are multiple matchings.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> area_of_triangle(h,x):</span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> h<span class="op">*</span>x<span class="op">/</span><span class="dv">2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>area_of_triangle(<span class="dv">3</span>,<span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">inner_join</span>(superheroes, publishers, <span class="at">by =</span> <span class="st">"publisher"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>7.5</code></pre>
-</div>
-</div>
-<p>Follow</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>reticulate<span class="sc">::</span><span class="fu">source_python</span>(<span class="st">"triangle.py"</span>) <span class="do">### Remember to provide proper relative or absolute path.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Note: For RMarkdown demonstration purposes below we;</p>
-<ul>
-<li>created a temporary file</li>
-<li>wrote our python function to that file using <code>cat</code></li>
-<li>then executed <code>source_python</code></li>
-<li>then called the function as R function</li>
-</ul>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>pyfile <span class="ot">&lt;-</span> <span class="fu">tempfile</span>(<span class="at">fileext =</span> <span class="st">".py"</span>)</span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"def area_of_triangle(h,x):</span></span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="st">  return h*x/2"</span>, <span class="at">file =</span> pyfile)</span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="fu">source_python</span>(pyfile)</span>
-<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="fu">area_of_triangle</span>(<span class="dv">3</span>, <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 7.5</code></pre>
-</div>
-</div>
-<p>But deep down it is a Python function.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(area_of_triangle)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>&lt;function area_of_triangle at 0x13f314f40&gt;</code></pre>
+<pre><code># A tibble: 6 × 5
+  name     alignment gender publisher yr_founded
+  &lt;chr&gt;    &lt;chr&gt;     &lt;chr&gt;  &lt;chr&gt;          &lt;int&gt;
+1 Magneto  bad       male   Marvel          1939
+2 Storm    good      female Marvel          1939
+3 Mystique bad       female Marvel          1939
+4 Batman   good      male   DC              1934
+5 Joker    bad       male   DC              1934
+6 Catwoman bad       female DC              1934</code></pre>
 </div>
 </div>
 </section>
-<section id="conclusion" class="level3">
-<h3 class="anchored" data-anchor-id="conclusion">Conclusion</h3>
-<p>To be honest Python versioning is a mess. Lots of parallel versions (even python2 version issues are still looming) and conflicts in different layers of computing might be troublesome especially in Docker settings. Therefore it is highly recommended to add Python code to your R code if it is totally necessary.</p>
-<p>Though it is always a good thing to have an exquisite tool if you need to use Python and cannot separate processes. <code>reticulate</code> is currently that tool.</p>
+<section id="semi-join" class="level2">
+<h2 class="anchored" data-anchor-id="semi-join">Semi Join</h2>
+<p>Semi Join is very similar to inner join but without columns from Y.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">semi_join</span>(superheroes, publishers, <span class="at">by =</span> <span class="st">"publisher"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 4
+  name     alignment gender publisher
+  &lt;chr&gt;    &lt;chr&gt;     &lt;chr&gt;  &lt;chr&gt;    
+1 Magneto  bad       male   Marvel   
+2 Storm    good      female Marvel   
+3 Mystique bad       female Marvel   
+4 Batman   good      male   DC       
+5 Joker    bad       male   DC       
+6 Catwoman bad       female DC       </code></pre>
+</div>
+</div>
+</section>
+<section id="full-join" class="level2">
+<h2 class="anchored" data-anchor-id="full-join">Full Join</h2>
+<p>Full join returns all rows and columns from both X and Y and both multiplies multiple matchings and compensates for missing matches.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">full_join</span>(superheroes, publishers, <span class="at">by =</span> <span class="st">"publisher"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 8 × 5
+  name     alignment gender publisher         yr_founded
+  &lt;chr&gt;    &lt;chr&gt;     &lt;chr&gt;  &lt;chr&gt;                  &lt;int&gt;
+1 Magneto  bad       male   Marvel                  1939
+2 Storm    good      female Marvel                  1939
+3 Mystique bad       female Marvel                  1939
+4 Batman   good      male   DC                      1934
+5 Joker    bad       male   DC                      1934
+6 Catwoman bad       female DC                      1934
+7 Hellboy  good      male   Dark Horse Comics         NA
+8 &lt;NA&gt;     &lt;NA&gt;      &lt;NA&gt;   Image                   1992</code></pre>
+</div>
+</div>
+</section>
+<section id="anti-join" class="level2">
+<h2 class="anchored" data-anchor-id="anti-join">Anti Join</h2>
+<p>Anti join returns all rows from X which do not have information (based on key column) in Y and returns only columns from X.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anti_join</span>(superheroes, publishers, <span class="at">by =</span> <span class="st">"publisher"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 4
+  name    alignment gender publisher        
+  &lt;chr&gt;   &lt;chr&gt;     &lt;chr&gt;  &lt;chr&gt;            
+1 Hellboy good      male   Dark Horse Comics</code></pre>
+</div>
+</div>
 
 
 </section>
@@ -691,13 +689,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./advanced.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Advanced</span>
+      <a href="./reticulate.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Using Python and R Together</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./dplyr-joins.html" class="pagination-link">
-        <span class="nav-page-text">Joins with dplyr</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./rvest.html" class="pagination-link">
+        <span class="nav-page-text">Website parsing with rvest</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
